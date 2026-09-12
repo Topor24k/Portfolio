@@ -14,7 +14,10 @@ function App() {
   const [isLight, setIsLight] = useState(false)
   const [soundOn, setSoundOn] = useState(true)
   const [isCardOpen, setIsCardOpen] = useState(false)
-  const [currentView, setCurrentView] = useState('home') // 'home' | 'projects' | 'about' | 'contact'
+  const [currentView, setCurrentView] = useState(() => {
+    const hash = window.location.hash.replace('#', '')
+    return ['projects', 'about', 'contact'].includes(hash) ? hash : 'home'
+  })
   const [isPageTransitioning, setIsPageTransitioning] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
   const [transitionLabel, setTransitionLabel] = useState('HOME')

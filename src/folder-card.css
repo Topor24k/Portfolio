@@ -2,6 +2,7 @@
 
 .folder-card {
   position: relative;
+  min-width: 0;
   cursor: pointer;
   outline: none;
   animation: folder-enter .5s cubic-bezier(.16, 1, .3, 1) both;
@@ -98,6 +99,7 @@
 .folder-body {
   position: relative;
   z-index: 1;
+  min-width: 0;
   border: 1.5px solid rgba(16, 16, 16, .14);
   border-top: none;
   background: #f5f2ec;
@@ -114,14 +116,14 @@
 
 /* Hover lift: tab and body lift together as one single physical folder */
 .folder-card:hover .folder-tab,
-.folder-card:focus-visible .folder-tab {
-  transform: translateY(-5px);
-}
-
-/* Hover lift */
+.folder-card:focus-visible .folder-tab,
 .folder-card:hover .folder-body,
 .folder-card:focus-visible .folder-body {
   transform: translateY(-5px);
+}
+
+.folder-card:hover .folder-body,
+.folder-card:focus-visible .folder-body {
   box-shadow: 0 12px 32px rgba(0, 0, 0, .12);
 }
 
@@ -140,6 +142,8 @@
 .folder-cover {
   position: relative;
   width: 100%;
+  aspect-ratio: 16 / 10;
+  max-height: 280px;
   overflow: hidden;
   border-bottom: 1.5px solid rgba(16, 16, 16, .08);
   background: #e8e4dc;
@@ -153,7 +157,9 @@
 .folder-cover-img {
   display: block;
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
 }
 
 /* ── Details section ────────────────────────────────────── */

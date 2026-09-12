@@ -12,7 +12,6 @@ import { setSoundMuted, playNavSound, playButtonClickSound } from './soundEffect
 
 function App() {
   const [isLight, setIsLight] = useState(false)
-  const [musicOn, setMusicOn] = useState(false)
   const [soundOn, setSoundOn] = useState(true)
   const [isCardOpen, setIsCardOpen] = useState(false)
   const [currentView, setCurrentView] = useState('home') // 'home' | 'projects' | 'about' | 'contact'

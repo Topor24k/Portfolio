@@ -1,13 +1,13 @@
 import React, { useEffect, useCallback, useState, useMemo, useRef } from 'react';
 import './project-detail-frame.css';
-import { playNavSound, playButtonClickSound } from './soundEffects';
+import { playButtonClickSound } from './soundEffects';
 
 export default function ProjectDetailFrame({ project, onBack, onNavigate }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const pointerRef = useRef({ startX: 0, startY: 0, active: false });
 
   const handleBack = useCallback(() => {
-    playNavSound();
+    playButtonClickSound();
     if (onBack) onBack();
   }, [onBack]);
 

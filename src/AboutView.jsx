@@ -104,7 +104,7 @@ export default function AboutView({ onNavigate }) {
         <section className="about-foundation about-section" aria-labelledby="about-foundation-title">
           <div className="about-foundation-copy">
             <header>
-              <p className="about-label">01 / The foundation</p>
+              <p className="about-label">01 The foundation</p>
               <h2 id="about-foundation-title" className="about-section-title">The person<br />behind the pixels.</h2>
             </header>
             <div className="about-prose">
@@ -137,7 +137,7 @@ export default function AboutView({ onNavigate }) {
         </section>
 
         <section className="about-philosophy about-section" aria-labelledby="about-philosophy-title">
-          <h2 id="about-philosophy-title" className="about-label">A personal compass / Core philosophy</h2>
+          <h2 id="about-philosophy-title" className="about-label">Core philosophy</h2>
           <blockquote>
             Success is not about doing everything perfectly, but about <span className="about-accent">consistently doing what's best.</span>
           </blockquote>
@@ -153,7 +153,7 @@ export default function AboutView({ onNavigate }) {
 
         <section className="about-escapes about-section" aria-labelledby="about-escapes-title">
           <div className="about-escapes-copy">
-            <p className="about-label">02 / Creative escapes</p>
+            <p className="about-label">02 Creative escapes</p>
             <h2 id="about-escapes-title" className="about-section-title">A little life<br /><span className="about-accent">beyond the screen.</span></h2>
             <div className="about-prose">
               <p>

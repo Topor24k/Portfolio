@@ -114,14 +114,14 @@
 
 /* Hover lift: tab and body lift together as one single physical folder */
 .folder-card:hover .folder-tab,
-.folder-card:focus-visible .folder-tab,
-.folder-card:hover .folder-body,
-.folder-card:focus-visible .folder-body {
+.folder-card:focus-visible .folder-tab {
   transform: translateY(-5px);
 }
 
+/* Hover lift */
 .folder-card:hover .folder-body,
 .folder-card:focus-visible .folder-body {
+  transform: translateY(-5px);
   box-shadow: 0 12px 32px rgba(0, 0, 0, .12);
 }
 

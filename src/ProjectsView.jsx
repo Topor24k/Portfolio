@@ -1,10 +1,10 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './projects.css'
 import { projects } from './projects'
 import FolderCard from './FolderCard'
 import ProjectDetailFrame from './ProjectDetailFrame'
 
-export default function ProjectsView({ view = 'projects', onNavigate }) {
+export default function ProjectsView({ view = 'projects', onNavigate, setIsProjectDetailOpen }) {
   const [selectedProject, setSelectedProject] = useState(() => {
     if (typeof window !== 'undefined' && window.location.hash.startsWith('#project/')) {
       const id = window.location.hash.replace('#project/', '')
@@ -12,6 +12,12 @@ export default function ProjectsView({ view = 'projects', onNavigate }) {
     }
     return null
   })
+
+  useEffect(() => {
+    if (setIsProjectDetailOpen) {
+      setIsProjectDetailOpen(!!selectedProject)
+    }
+  }, [selectedProject, setIsProjectDetailOpen])
 
   const titles = {
     about: {

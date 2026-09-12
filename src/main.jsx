@@ -14,6 +14,9 @@ function App() {
   const [isLight, setIsLight] = useState(false)
   const [soundOn, setSoundOn] = useState(true)
   const [isCardOpen, setIsCardOpen] = useState(false)
+  const [isProjectDetailOpen, setIsProjectDetailOpen] = useState(() => {
+    return typeof window !== 'undefined' && window.location.hash.startsWith('#project/');
+  })
   const [currentView, setCurrentView] = useState(() => {
     const hash = window.location.hash.replace('#', '')
     if (hash.startsWith('project')) return 'projects'
@@ -109,39 +112,41 @@ function App() {
   return (
     <main className={`portfolio-shell ${isLight ? 'light' : 'dark'}`}>
       <PageWipe active={isPageTransitioning} label={transitionLabel} />
-      <header className={`site-header${isScrolled ? ' is-scrolled' : ''}`}>
-        <button
-          className="utility-button sound-toggle-btn"
-          type="button"
-          onClick={() => {
-            const next = !soundOn
-            if (next) {
-              setSoundMuted(false)
-              setSoundOn(true)
-              playButtonClickSound()
-            } else {
-              playButtonClickSound()
-              setSoundMuted(true)
-              setSoundOn(false)
-            }
-          }}
-        >
-          SOUND: {soundOn ? 'ON' : 'OFF'}
-        </button>
-
-        <NavigationMenu currentView={currentView} onNavigate={handleNavigate} />
-
-        <div className="utility-actions">
-          <button className="utility-button" type="button" onClick={() => setIsLight(!isLight)}>
-            <span aria-hidden="true">✱</span> {isLight ? 'LIGHT' : 'DARK'}
+      {!isProjectDetailOpen && (
+        <header className={`site-header${isScrolled ? ' is-scrolled' : ''}`}>
+          <button
+            className="utility-button sound-toggle-btn"
+            type="button"
+            onClick={() => {
+              const next = !soundOn
+              if (next) {
+                setSoundMuted(false)
+                setSoundOn(true)
+                playButtonClickSound()
+              } else {
+                playButtonClickSound()
+                setSoundMuted(true)
+                setSoundOn(false)
+              }
+            }}
+          >
+            SOUND: {soundOn ? 'ON' : 'OFF'}
           </button>
-        </div>
-      </header>
+
+          <NavigationMenu currentView={currentView} onNavigate={handleNavigate} />
+
+          <div className="utility-actions">
+            <button className="utility-button" type="button" onClick={() => setIsLight(!isLight)}>
+              <span aria-hidden="true">✱</span> {isLight ? 'LIGHT' : 'DARK'}
+            </button>
+          </div>
+        </header>
+      )}
 
       {currentView === 'about' ? (
         <AboutView onNavigate={handleNavigate} />
       ) : currentView !== 'home' ? (
-        <ProjectsView view={currentView} onNavigate={handleNavigate} />
+        <ProjectsView view={currentView} onNavigate={handleNavigate} setIsProjectDetailOpen={setIsProjectDetailOpen} />
       ) : (
         <section className="hero" id="top" aria-labelledby="hero-title">
           <div className="hero-title-wrapper">

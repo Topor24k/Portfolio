@@ -25,7 +25,7 @@ export default function AboutView({ onNavigate }) {
               <figcaption className="about-sr-only">Fig. 01 / Portrait & stance</figcaption>
             </figure>
             <div className="about-hero-copy">
-              <p className="about-label">Identity & creed</p>
+              <p className="about-label">What I Am / Who I Am / What I Do</p>
               <h1 id="about-title" className="about-headline">
                 <span>Keen.</span>
                 <span>Meticulous.</span>

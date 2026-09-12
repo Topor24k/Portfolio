@@ -102,26 +102,26 @@ export default function AboutView({ onNavigate }) {
         </section>
 
         <section className="about-foundation about-section" aria-labelledby="about-foundation-title">
-          <header>
-            <p className="about-label">01 / The foundation</p>
-            <h2 id="about-foundation-title" className="about-section-title">The person<br />behind the pixels.</h2>
-          </header>
-          <div className="about-prose">
-            <p className="about-lead">
-              I am Kayeen M. Campaña, a 21-year-old Computer Science student from Davao City,
-              originally from Getafe, Bohol. I have a strong foundation in front-end web development.
-            </p>
-            <p>
-              Currently pursuing a Bachelor of Science in Computer Science, I channel my academic
-              training into crafting clean, responsive, and user-focused web interfaces. My primary
-              focus lies in front-end design — turning ideas into intuitive digital experiences.
-            </p>
+          <div className="about-foundation-copy">
+            <header>
+              <p className="about-label">01 / The foundation</p>
+              <h2 id="about-foundation-title" className="about-section-title">The person<br />behind the pixels.</h2>
+            </header>
+            <div className="about-prose">
+              <p className="about-lead">
+                I am Kayeen M. Campaña, a 21-year-old Computer Science student from Davao City,
+                originally from Getafe, Bohol. I have a strong foundation in front-end web development.
+              </p>
+              <p>
+                Currently pursuing a Bachelor of Science in Computer Science, I channel my academic
+                training into crafting clean, responsive, and user-focused web interfaces. My primary
+                focus lies in front-end design — turning ideas into intuitive digital experiences.
+              </p>
+            </div>
           </div>
-        </section>
-
-        <section className="about-journey about-section" aria-labelledby="about-journey-title">
           <figure className="about-photo-story">
             <img
+              className="about-photo-story-mirrored"
               src="/About%20Me%20Images/My%20Projects%20Side%20Photo.png"
               alt="Kayeen looking up from a laptop at a café table"
               width="1070"
@@ -131,33 +131,9 @@ export default function AboutView({ onNavigate }) {
               decoding="async"
             />
             <figcaption>
-              <span>Fig. 02 / Workflow & iteration</span>
-              <span>AMA Computer College · TVL–Technology</span>
+              <span>Davao City · Workspace & craft</span>
             </figcaption>
           </figure>
-          <div className="about-journey-copy">
-            <p className="about-label">02 / The journey & resilience</p>
-            <h2 id="about-journey-title" className="about-section-title">Always learning.<br /><span className="about-accent">Always becoming.</span></h2>
-            <div className="about-prose">
-              <p>
-                I completed my Senior High School at <strong>AMA Computer College</strong> under
-                the <strong>TVL – Technology strand</strong>. Though my secondary years coincided with
-                the height of the pandemic, which presented unique challenges given my nature as an
-                auditory learner, the experience reinforced my resilience and adaptability.
-              </p>
-              <p>
-                I thrive when I can engage directly with concepts through listening and discussion — a
-                style I carry into how I approach collaborative work and continuous learning.
-              </p>
-            </div>
-            <aside className="about-learning-note">
-              <h3>Auditory & dialogue-driven learning</h3>
-              <p>
-                Transforming abstract logic into collaborative resonance through listening,
-                iterative dialogue, and deliberate practice.
-              </p>
-            </aside>
-          </div>
         </section>
 
         <section className="about-philosophy about-section" aria-labelledby="about-philosophy-title">
@@ -177,7 +153,7 @@ export default function AboutView({ onNavigate }) {
 
         <section className="about-escapes about-section" aria-labelledby="about-escapes-title">
           <div className="about-escapes-copy">
-            <p className="about-label">03 / Creative escapes</p>
+            <p className="about-label">02 / Creative escapes</p>
             <h2 id="about-escapes-title" className="about-section-title">A little life<br /><span className="about-accent">beyond the screen.</span></h2>
             <div className="about-prose">
               <p>
@@ -206,7 +182,6 @@ export default function AboutView({ onNavigate }) {
               decoding="async"
             />
             <figcaption>
-              <span>Fig. 03 / Downtime & warmth</span>
               <span>{interests.map(([title]) => title).join(' · ')}</span>
             </figcaption>
           </figure>

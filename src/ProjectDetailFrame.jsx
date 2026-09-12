@@ -83,7 +83,10 @@ export default function ProjectDetailFrame({ project, onBack, onNavigate }) {
       )}
 
       {/* Project Showcase Gallery */}
-      <div className="project-showcase">
+      <div 
+        className="project-showcase"
+        style={{ '--side-count': sideItems.length }}
+      >
         <div className="showcase-card main-card">
           <img 
             src={mainItem.src} 

@@ -2,10 +2,16 @@ import { useState } from 'react'
 import './projects.css'
 import { projects } from './projects'
 import FolderCard from './FolderCard'
-import ProjectModal from './ProjectModal'
+import ProjectDetailFrame from './ProjectDetailFrame'
 
 export default function ProjectsView({ view = 'projects', onNavigate }) {
-  const [selectedProject, setSelectedProject] = useState(null)
+  const [selectedProject, setSelectedProject] = useState(() => {
+    if (typeof window !== 'undefined' && window.location.hash.startsWith('#project/')) {
+      const id = window.location.hash.replace('#project/', '')
+      return projects.find((p) => p.id === id) || null
+    }
+    return null
+  })
 
   const titles = {
     about: {
@@ -33,6 +39,17 @@ export default function ProjectsView({ view = 'projects', onNavigate }) {
     )
   }
 
+  // If a specific project is selected, display it in the dedicated archival frame
+  if (selectedProject) {
+    return (
+      <ProjectDetailFrame
+        project={selectedProject}
+        onBack={() => setSelectedProject(null)}
+        onNavigate={onNavigate}
+      />
+    )
+  }
+
   return (
     <div className="projects-view projects-view--grid">
       {/* Section header */}
@@ -48,19 +65,13 @@ export default function ProjectsView({ view = 'projects', onNavigate }) {
             key={project.id}
             project={project}
             index={i}
-            onSelect={setSelectedProject}
+            onSelect={(proj) => {
+              setSelectedProject(proj)
+              window.scrollTo({ top: 0, behavior: 'instant' })
+            }}
           />
         ))}
       </div>
-
-      {/* Project detail modal */}
-      {selectedProject && (
-        <ProjectModal
-          project={selectedProject}
-          onClose={() => setSelectedProject(null)}
-          onNavigate={onNavigate}
-        />
-      )}
     </div>
   )
 }

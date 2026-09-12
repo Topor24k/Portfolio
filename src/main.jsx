@@ -16,6 +16,7 @@ function App() {
   const [isCardOpen, setIsCardOpen] = useState(false)
   const [currentView, setCurrentView] = useState(() => {
     const hash = window.location.hash.replace('#', '')
+    if (hash.startsWith('project')) return 'projects'
     return ['projects', 'about', 'contact'].includes(hash) ? hash : 'home'
   })
   const [isPageTransitioning, setIsPageTransitioning] = useState(false)

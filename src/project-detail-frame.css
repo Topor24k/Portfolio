@@ -77,7 +77,10 @@
   border-radius: 12px;
   overflow: hidden;
   display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
   background: var(--bg-card, #1e293b);
+  cursor: pointer;
 }
 
 .showcase-img {
@@ -86,12 +89,96 @@
   left: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .showcase-card:hover .showcase-img {
   transform: scale(1.05);
+  filter: brightness(0.9);
+}
+
+.showcase-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 60%;
+  background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 100%);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.showcase-overlay {
+  position: relative;
+  z-index: 3;
+  padding: 1.5rem;
+  color: #fff;
+  pointer-events: none;
+}
+
+.showcase-icon {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+  opacity: 0.8;
+}
+
+.showcase-title {
+  font-family: 'DM Mono', monospace;
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+  line-height: 1.2;
+}
+
+.main-card .showcase-title {
+  font-size: 1.4rem;
+}
+
+.showcase-desc {
+  font-size: 0.85rem;
+  margin: 0;
+  opacity: 0.8;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.side-card .showcase-desc {
+  display: none;
+}
+
+.health-score-box {
+  position: absolute;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  z-index: 3;
+  color: white;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  pointer-events: none;
+}
+
+.health-score-box .score-number {
+  font-family: 'Oswald', sans-serif;
+  font-size: 3rem;
+  line-height: 1;
+  margin: 0.25rem 0;
+}
+
+.health-score-box .score-label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  opacity: 0.8;
+  letter-spacing: 0.05em;
 }
 
 @media (max-width: 1024px) {
@@ -115,151 +202,11 @@
     grid-column: span 1;
     height: 350px;
   }
-}
-.floating-dossier-card {
-  position: absolute;
-  bottom: 20px;
-  right: 20px;
-  width: 280px;
-  background-color: #2563eb;
-  color: white;
-  border-radius: 18px;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-  transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-  overflow: hidden;
-  z-index: 150;
-}
-
-.dossier-collapsed {
-  width: 140px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: default;
-}
-
-.dossier-label {
-  font-weight: 500;
-  font-size: 0.9rem;
-  letter-spacing: 0.05em;
-}
-
-.is-expanded {
-  height: auto;
-  min-height: 250px;
-}
-
-.dossier-content {
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-.dossier-header {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.75rem;
-  opacity: 0.8;
-  margin-bottom: 1rem;
-}
-
-.dossier-title {
-  font-family: 'Oswald', sans-serif;
-  font-size: 1.8rem;
-  margin: 0 0 1rem 0;
-  line-height: 1.1;
-}
-
-.dossier-desc {
-  font-size: 0.85rem;
-  line-height: 1.5;
-  margin-bottom: 2rem;
-  flex-grow: 1;
-}
-
-.dossier-actions {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: auto;
-}
-
-.dossier-btn-download {
-  background: #facc15;
-  color: #854d0e;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 99px;
-  font-weight: 600;
-  font-family: inherit;
-  font-size: 0.85rem;
-  cursor: pointer;
-  transition: filter 0.2s;
-}
-
-.dossier-btn-download:hover {
-  filter: brightness(1.1);
-}
-
-.dossier-btn-action {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: #ef4444;
-  color: white;
-  border: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.2rem;
-  cursor: pointer;
-  transition: transform 0.2s;
-}
-
-.dossier-btn-action:hover {
-  transform: scale(1.1);
-}
-
-@media (max-width: 768px) {
   .project-title {
     font-size: 3rem;
   }
-  
   .prose-columns {
     grid-template-columns: 1fr;
     gap: 1.5rem;
-  }
-  
-  .archival-desk {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 2rem;
-    padding-top: 3rem;
-    height: auto;
-  }
-  
-  .desk-artifact {
-    position: relative !important;
-    left: auto !important;
-    top: auto !important;
-    transform: none !important;
-    width: 100%;
-    max-width: 320px;
-  }
-  
-  .desk-artifact.is-focused {
-    transform: scale(1.05) !important;
-  }
-  
-  .floating-dossier-card {
-    position: fixed;
-    bottom: 20px;
-    right: 50%;
-    transform: translateX(50%);
-    width: 90%;
-    max-width: 360px;
   }
 }

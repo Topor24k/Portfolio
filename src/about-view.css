@@ -89,7 +89,10 @@
   text-transform: uppercase;
 }
 
-.about-headline > span { display: block; }
+.about-headline > span {
+  display: block;
+  min-height: 1.12em;
+}
 
 .about-role {
   margin: clamp(1.5rem, 2.5vw, 2.5rem) 0 0;

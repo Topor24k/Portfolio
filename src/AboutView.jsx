@@ -1,4 +1,62 @@
+import { useEffect, useState } from 'react'
 import './about-view.css'
+
+const WORD_SETS = [
+  ['Keen.', 'Meticulous.', 'Creative.'],
+  ['Kayeen.', 'Melecio.', 'Campana.'],
+]
+
+function useRotatingHeadline() {
+  const [setIndex, setSetIndex] = useState(0)
+  const [displayedWords, setDisplayedWords] = useState(WORD_SETS[0])
+  const [phase, setPhase] = useState('HOLD') // 'HOLD' | 'DELETING' | 'TYPING'
+
+  useEffect(() => {
+    let timer
+
+    if (phase === 'HOLD') {
+      timer = setTimeout(() => {
+        setPhase('DELETING')
+      }, 10000)
+    } else if (phase === 'DELETING') {
+      timer = setTimeout(() => {
+        setDisplayedWords((prev) => {
+          const anyHasLength = prev.some((w) => w.length > 0)
+          if (!anyHasLength) {
+            setSetIndex((curr) => (curr + 1) % WORD_SETS.length)
+            setPhase('TYPING')
+            return ['', '', '']
+          }
+          return prev.map((w) => (w.length > 0 ? w.slice(0, -1) : ''))
+        })
+      }, 45)
+    } else if (phase === 'TYPING') {
+      const targetWords = WORD_SETS[setIndex]
+      timer = setTimeout(() => {
+        setDisplayedWords((prev) => {
+          let allDone = true
+          const next = prev.map((currentWord, i) => {
+            const target = targetWords[i]
+            if (currentWord.length < target.length) {
+              allDone = false
+              return target.slice(0, currentWord.length + 1)
+            }
+            return currentWord
+          })
+
+          if (allDone) {
+            setPhase('HOLD')
+          }
+          return next
+        })
+      }, 75)
+    }
+
+    return () => clearTimeout(timer)
+  }, [phase, setIndex])
+
+  return displayedWords
+}
 
 const interests = [
   ['Writing', 'Structuring thoughts, organizing internal narratives, and practicing clear communication.'],
@@ -8,6 +66,8 @@ const interests = [
 ]
 
 export default function AboutView({ onNavigate }) {
+  const headlineWords = useRotatingHeadline()
+
   return (
     <article className="about-view" aria-label="About Kayeen M. Campaña">
       <div className="about-container">
@@ -26,10 +86,10 @@ export default function AboutView({ onNavigate }) {
             </figure>
             <div className="about-hero-copy">
               <p className="about-label">What I Am / Who I Am / What I Do</p>
-              <h1 id="about-title" className="about-headline">
-                <span>Keen.</span>
-                <span>Meticulous.</span>
-                <span className="about-accent">Creative.</span>
+              <h1 id="about-title" className="about-headline" aria-label="Keen. Meticulous. Creative. Kayeen Melecio Campana.">
+                <span aria-hidden="true">{headlineWords[0] || '\u00A0'}</span>
+                <span aria-hidden="true">{headlineWords[1] || '\u00A0'}</span>
+                <span className="about-accent" aria-hidden="true">{headlineWords[2] || '\u00A0'}</span>
               </h1>
               <p className="about-role">
                 B.S. Computer Science student<br />

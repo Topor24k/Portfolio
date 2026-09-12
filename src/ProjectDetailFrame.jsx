@@ -52,12 +52,8 @@ export default function ProjectDetailFrame({ project, onBack, onNavigate }) {
       <header className="detail-top-bar">
         <div className="breadcrumbs">
           <button className="back-btn" onClick={handleBack}>
-            ← {project.breadcrumbs || 'Source / Drawer / Registry / Residue'}
+            ← Back To Project
           </button>
-        </div>
-        <div className="archive-meta">
-          <span className="archive-label">Archive Assemblage</span>
-          <span className="archive-date">{project.archiveDate || 'Jul 29, 1975'}</span>
         </div>
       </header>
 

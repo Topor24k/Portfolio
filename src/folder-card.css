@@ -151,11 +151,6 @@
   display: block;
   width: 100%;
   height: auto;
-  transition: transform .4s cubic-bezier(.16, 1, .3, 1);
-}
-
-.folder-card:hover .folder-cover-img {
-  transform: scale(1.03);
 }
 
 /* ── Details section ────────────────────────────────────── */

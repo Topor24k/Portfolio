@@ -69,3 +69,4 @@ export const playIdLaceSound = () => playSound('idLace')
 export const playIdSwitchSound = () => playSound('idSwitch')
 export const playNavSound = () => playSound('nav')
 export const playButtonClickSound = () => playSound('buttonClick')
+

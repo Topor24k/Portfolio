@@ -82,10 +82,10 @@
 .about-headline {
   margin: 0;
   font-family: 'Oswald', Impact, sans-serif;
-  font-size: clamp(4rem, 7.65vw, 8.5rem);
+  font-size: clamp(3.2rem, 6.8vw, 7.8rem);
   font-weight: 700;
-  line-height: 1.06;
-  letter-spacing: -0.055em;
+  line-height: 1.12;
+  letter-spacing: clamp(0.04em, 0.6vw, 0.08em);
   text-transform: uppercase;
 }
 

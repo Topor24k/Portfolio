@@ -151,49 +151,78 @@
   z-index: 1;
 }
 
-/* Controls */
-.carousel-controls {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 2rem;
-  font-family: 'DM Mono', monospace;
-  font-size: 0.85rem;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-}
-
-.carousel-btn {
-  background: transparent;
-  border: 1.5px solid currentColor;
-  color: inherit;
-  padding: 8px 20px;
+/* Side Navigation Buttons (Left & Right) */
+.carousel-side-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 25;
+  background: rgba(21, 21, 21, 0.72);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  color: #fff;
+  padding: 10px 18px;
   border-radius: 999px;
-  font: inherit;
-  font-size: 0.82rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.8rem;
   letter-spacing: 0.08em;
+  text-transform: uppercase;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+  gap: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease, color 0.2s ease;
 }
 
-.carousel-btn:hover {
+.light .carousel-side-btn {
+  background: rgba(245, 242, 236, 0.85);
+  border-color: rgba(16, 16, 16, 0.2);
+  color: #101010;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.carousel-side-btn.prev-side-btn {
+  left: clamp(1rem, 2.5vw, 2.5rem);
+}
+
+.carousel-side-btn.next-side-btn {
+  right: clamp(1rem, 2.5vw, 2.5rem);
+}
+
+.carousel-side-btn:hover {
   background: #f04b42;
   border-color: #f04b42;
   color: #fff;
-  transform: translateY(-1px);
+  transform: translateY(-50%) scale(1.06);
 }
 
-.dark .carousel-btn:hover {
+.light .carousel-side-btn:hover {
   background: #f04b42;
   border-color: #f04b42;
   color: #fff;
 }
 
-.carousel-btn:active {
-  transform: translateY(0);
+.carousel-side-btn:active {
+  transform: translateY(-50%) scale(0.96);
+}
+
+.btn-arrow {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.btn-text {
+  font-weight: 500;
+}
+
+/* Indicator */
+.carousel-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'DM Mono', monospace;
 }
 
 .carousel-counter {
@@ -238,12 +267,18 @@
     transform: translateX(48%) scale(0.78);
     opacity: 0.3;
   }
-  .carousel-controls {
-    gap: 1.25rem;
-  }
-  .carousel-btn {
-    padding: 6px 16px;
+  .carousel-side-btn {
+    padding: 8px 12px;
     font-size: 0.75rem;
+  }
+  .carousel-side-btn .btn-text {
+    display: none;
+  }
+  .carousel-side-btn.prev-side-btn {
+    left: 0.75rem;
+  }
+  .carousel-side-btn.next-side-btn {
+    right: 0.75rem;
   }
   .project-title {
     font-size: 3rem;

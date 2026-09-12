@@ -152,30 +152,38 @@ export default function ProjectDetailFrame({ project, onBack, onNavigate }) {
               </div>
             );
           })}
+
+          {/* Left and Right Navigation Buttons */}
+          {galleryItems.length > 1 && (
+            <>
+              <button
+                type="button"
+                className="carousel-side-btn prev-side-btn"
+                onClick={handlePrev}
+                aria-label="Previous image"
+              >
+                <span className="btn-arrow">←</span>
+                <span className="btn-text">PREV</span>
+              </button>
+              <button
+                type="button"
+                className="carousel-side-btn next-side-btn"
+                onClick={handleNext}
+                aria-label="Next image"
+              >
+                <span className="btn-text">NEXT</span>
+                <span className="btn-arrow">→</span>
+              </button>
+            </>
+          )}
         </div>
 
-        {/* Carousel Navigation Bar */}
+        {/* Carousel Indicator */}
         {galleryItems.length > 1 && (
-          <div className="carousel-controls">
-            <button
-              type="button"
-              className="carousel-btn prev-btn"
-              onClick={handlePrev}
-              aria-label="Previous image"
-            >
-              ← PREV
-            </button>
+          <div className="carousel-indicator">
             <span className="carousel-counter">
               {String((displayItems[currentIndex]?.displayIndex ?? currentIndex) + 1).padStart(2, '0')} / {String(galleryItems.length).padStart(2, '0')}
             </span>
-            <button
-              type="button"
-              className="carousel-btn next-btn"
-              onClick={handleNext}
-              aria-label="Next image"
-            >
-              NEXT →
-            </button>
           </div>
         )}
       </div>

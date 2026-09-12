@@ -1,262 +1,190 @@
-import { useEffect, useState } from 'react'
-import './project-detail-frame.css'
-import { playButtonClickSound, playNavSound } from './soundEffects'
+import React, { useEffect, useState, useCallback, useRef } from 'react';
+import './project-detail-frame.css';
+import { playButtonClickSound, playNavSound } from './soundEffects';
 
 export default function ProjectDetailFrame({ project, onBack, onNavigate }) {
-  const artifacts = project.artifacts || [
-    {
-      id: 'primary',
-      title: project.tab,
-      subtitle: project.name,
-      year: '2024',
-      type: 'screen',
-      description: project.details || project.description,
-      image: project.cover,
-      badge: 'PRIMARY',
-    },
-  ]
+  const [activeArtifactId, setActiveArtifactId] = useState(null);
+  const deskRef = useRef(null);
 
-  const [activeArtifactId, setActiveArtifactId] = useState(artifacts[0]?.id)
-  const activeArtifact = artifacts.find((a) => a.id === activeArtifactId) || artifacts[0]
+  const handleBack = useCallback(() => {
+    playNavSound();
+    if (onBack) onBack();
+  }, [onBack]);
 
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'instant' })
-
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') {
-        playNavSound()
-        onBack()
+        if (activeArtifactId) {
+          setActiveArtifactId(null);
+        } else {
+          handleBack();
+        }
       }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [activeArtifactId, handleBack]);
+
+  const handleDeskClick = (e) => {
+    if (e.target === deskRef.current) {
+      setActiveArtifactId(null);
     }
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [onBack])
+  };
 
-  const handleSelectArtifact = (artifact) => {
-    playButtonClickSound()
-    setActiveArtifactId(artifact.id)
-  }
+  const getArtifactPos = (index) => {
+    const positions = [
+      { left: '5%', top: '8%', rotate: '-3deg' },
+      { left: '38%', top: '5%', rotate: '2deg' },
+      { left: '15%', top: '55%', rotate: '-5deg' },
+      { left: '55%', top: '45%', rotate: '4deg' },
+      { left: '70%', top: '15%', rotate: '-2deg' },
+    ];
+    return positions[index % positions.length];
+  };
 
-  const handleNextArtifact = () => {
-    playButtonClickSound()
-    const currentIndex = artifacts.findIndex((a) => a.id === activeArtifactId)
-    const nextIndex = (currentIndex + 1) % artifacts.length
-    setActiveArtifactId(artifacts[nextIndex].id)
-  }
+  if (!project) return null;
 
-  const handleBackClick = () => {
-    playNavSound()
-    onBack()
-  }
+  const activeArtifact = project.artifacts?.find(a => a.id === activeArtifactId);
 
   return (
-    <article className="project-detail-frame" aria-label={`Project detail: ${project.name}`}>
-      {/* Top navigation and archival metadata bar */}
-      <nav className="archival-topbar" aria-label="Project breadcrumb and navigation">
-        <div className="archival-breadcrumbs">
-          <span className="archival-crumb-source">
-            {project.breadcrumbs || `PROJECTS / ARCHIVE / ${project.tab}`}
-          </span>
-        </div>
-
-        <div className="archival-topbar-actions">
-          <span className="archival-stamp">{project.archiveDate || 'Archive Assemblage · 2024'}</span>
-          <button
-            type="button"
-            className="archival-back-btn"
-            onClick={handleBackClick}
-            aria-label="Back to projects list"
-          >
-            ← BACK TO PROJECTS
+    <div className="project-detail-container">
+      {/* Top Bar */}
+      <header className="detail-top-bar">
+        <div className="breadcrumbs">
+          <button className="back-btn" onClick={handleBack}>
+            ← {project.breadcrumbs || 'Source / Drawer / Registry / Residue'}
           </button>
         </div>
-      </nav>
-
-      {/* Main Archival Header */}
-      <header className="archival-header">
-        <p className="archival-eyebrow">{project.category}</p>
-        <h1 className="archival-title">{project.name}</h1>
-
-        <div className="archival-prose-grid">
-          <p className="archival-prose-column">
-            {project.overview?.p1 || project.description}
-          </p>
-          <p className="archival-prose-column">
-            {project.overview?.p2 || project.details || project.description}
-          </p>
+        <div className="archive-meta">
+          <span className="archive-label">Archive Assemblage</span>
+          <span className="archive-date">{project.archiveDate || 'Jul 29, 1975'}</span>
         </div>
       </header>
 
-      {/* Archival Artifact Workbench */}
-      <section className="archival-workbench" aria-label="Interactive project artifacts desk">
-        <div className="archival-desk">
-          {/* Artifact items arranged across the desk */}
-          <div className="archival-artifacts-stage">
-            {artifacts.map((artifact, index) => {
-              const isActive = artifact.id === activeArtifactId
-              return (
-                <div
-                  key={artifact.id}
-                  className={`archival-artifact-item archival-artifact--${artifact.type} ${
-                    isActive ? 'is-active' : ''
-                  }`}
-                  onClick={() => handleSelectArtifact(artifact)}
-                  role="button"
-                  tabIndex={0}
-                  aria-pressed={isActive}
-                  aria-label={`View artifact ${artifact.title}: ${artifact.subtitle}`}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault()
-                      handleSelectArtifact(artifact)
-                    }
-                  }}
-                  style={{
-                    '--item-index': index,
-                  }}
-                >
-                  {/* Visual Header / Label on Artifact */}
-                  <div className="artifact-header-strip">
-                    <span className="artifact-id-badge">{artifact.badge || artifact.title}</span>
-                    <span className="artifact-serial">{artifact.title}</span>
+      {/* Main Title */}
+      <h1 className="project-title">{project.name}</h1>
+
+      {/* Dual-column Prose */}
+      {project.overview && (
+        <div className="prose-columns">
+          <div className="prose-col">{project.overview.p1}</div>
+          <div className="prose-col">{project.overview.p2}</div>
+        </div>
+      )}
+
+      {/* Artifacts Desk */}
+      <div className="archival-desk" ref={deskRef} onClick={handleDeskClick}>
+        <div className="desk-label">ARTIFACTS DESK</div>
+        
+        {project.artifacts?.map((artifact, index) => {
+          const pos = getArtifactPos(index);
+          const isFocused = activeArtifactId === artifact.id;
+          const isDimmed = activeArtifactId && !isFocused;
+          
+          let className = 'desk-artifact';
+          if (isFocused) className += ' is-focused';
+          if (isDimmed) className += ' is-dimmed';
+          
+          return (
+            <div 
+              key={artifact.id}
+              className={className}
+              style={{
+                '--rotate': pos.rotate,
+                left: pos.left,
+                top: pos.top,
+              }}
+              onClick={(e) => {
+                e.stopPropagation();
+                playButtonClickSound();
+                setActiveArtifactId(artifact.id);
+              }}
+            >
+              {artifact.type === 'screen' && (
+                <div className="artifact-screen-housing">
+                  <div className="screen-header">
+                    <span className="dot red"></span>
+                    <span className="dot yellow"></span>
+                    <span className="dot green"></span>
                   </div>
-
-                  {/* Artifact Content Body */}
-                  {artifact.type === 'screen' && artifact.image && (
-                    <div className="artifact-screen-housing">
-                      <img
-                        src={artifact.image}
-                        alt={artifact.subtitle}
-                        className="artifact-screen-img"
-                        loading="lazy"
-                        draggable="false"
-                      />
-                    </div>
+                  {artifact.image ? (
+                    <img src={artifact.image} alt={artifact.title} />
+                  ) : (
+                    <div className="placeholder-image">SCREEN CAPTURE</div>
                   )}
-
-                  {artifact.type === 'document' && (
-                    <div className="artifact-document-sheet">
-                      <div className="artifact-sheet-watermark">{artifact.docCategory || 'SPECIFICATION'}</div>
-                      <div className="artifact-sheet-meta">
-                        <span className="artifact-sheet-docnum">{artifact.docNumber || 'DOC // SPEC'}</span>
-                        <span className="artifact-sheet-stamp">14 DAY USE</span>
-                      </div>
-                      <h3 className="artifact-sheet-title">{artifact.docTitle || artifact.subtitle}</h3>
-
-                      {/* Technical Blueprint SVG Waveform / Grid */}
-                      <div className="artifact-waveform-box" aria-hidden="true">
-                        <svg viewBox="0 0 300 60" className="artifact-waveform-svg">
-                          <polyline
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="1.5"
-                            points="0,30 20,30 35,10 50,50 65,30 90,30 110,8 125,48 140,30 170,30 190,15 210,45 225,30 260,30 280,18 300,30"
-                          />
-                        </svg>
-                      </div>
-
-                      <ul className="artifact-doc-lines">
-                        {artifact.docLines?.map((line, i) => (
-                          <li key={i}>{line}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-
-                  {artifact.type === 'photo' || artifact.type === 'log' ? (
-                    <div className="artifact-photo-card">
-                      <div className="artifact-sheet-meta">
-                        <span className="artifact-sheet-docnum">{artifact.docNumber || 'LOG // RECORD'}</span>
-                        <span className="artifact-photo-badge">{artifact.badge || 'VERIFIED'}</span>
-                      </div>
-                      <h3 className="artifact-photo-title">{artifact.docTitle || artifact.subtitle}</h3>
-
-                      <ul className="artifact-doc-lines artifact-doc-lines--compact">
-                        {artifact.docLines?.map((line, i) => (
-                          <li key={i}>{line}</li>
-                        ))}
-                      </ul>
-
-                      <div className="artifact-photo-caption">
-                        <span>{artifact.subtitle}</span>
-                        <span className="artifact-photo-year">{artifact.year}</span>
-                      </div>
-                    </div>
-                  ) : null}
                 </div>
-              )
-            })}
-          </div>
-
-          {/* Floating Blue Dossier Card (Modeled after the reference video) */}
-          <aside className="floating-dossier-card" aria-label="Artifact specification dossier">
-            <div className="dossier-card-header">
-              <span className="dossier-badge">{activeArtifact.title}</span>
-            </div>
-
-            <div className="dossier-body">
-              <h2 className="dossier-title">{activeArtifact.subtitle}</h2>
-              <p className="dossier-description">{activeArtifact.description}</p>
-              <div className="dossier-meta-row">
-                <span className="dossier-year">{activeArtifact.year}</span>
-                <span className="dossier-type-tag">{activeArtifact.badge}</span>
-              </div>
-            </div>
-
-            {/* Action buttons (Yellow pill button + red circle toggle from reference) */}
-            <div className="dossier-actions">
-              {project.link ? (
-                <a
-                  href={project.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="dossier-primary-btn"
-                  aria-label={`Open external project link for ${project.name}`}
-                >
-                  <span className="dossier-btn-icon" aria-hidden="true">↗</span>
-                  <span>VIEW PROJECT</span>
-                </a>
-              ) : (
-                <button
-                  type="button"
-                  className="dossier-primary-btn"
-                  onClick={handleNextArtifact}
-                >
-                  <span>NEXT ARTIFACT</span>
-                </button>
+              )}
+              
+              {artifact.type === 'document' && (
+                <div className="artifact-document-housing">
+                  <div className="doc-header">
+                    <span className="doc-number">{artifact.docNumber || 'DOC-01'}</span>
+                    <span className="doc-category">{artifact.docCategory || 'SPECIFICATION'}</span>
+                  </div>
+                  <h3 className="doc-title">{artifact.docTitle || artifact.title}</h3>
+                  <div className="doc-lines">
+                    {artifact.docLines?.map((line, i) => (
+                      <div key={i} className="doc-line">{line}</div>
+                    ))}
+                    {!artifact.docLines && (
+                      <>
+                        <div className="doc-line"></div>
+                        <div className="doc-line"></div>
+                        <div className="doc-line"></div>
+                        <div className="doc-line w-75"></div>
+                      </>
+                    )}
+                  </div>
+                </div>
               )}
 
-              <button
-                type="button"
-                className="dossier-circle-btn"
-                onClick={handleNextArtifact}
-                title="Cycle next artifact"
-                aria-label="Cycle to next artifact"
-              >
-                ↻
-              </button>
+              {artifact.type === 'photo' && (
+                <div className="artifact-photo-housing">
+                  <div className="photo-frame">
+                    {artifact.image ? (
+                      <img src={artifact.image} alt={artifact.title} />
+                    ) : (
+                      <div className="placeholder-image">PHOTOGRAPH</div>
+                    )}
+                  </div>
+                  <div className="photo-caption">{artifact.title}</div>
+                </div>
+              )}
+
+              {artifact.type === 'log' && (
+                <div className="artifact-log-housing">
+                  <div className="log-header">FIELD LOG</div>
+                  <div className="log-content">{artifact.description}</div>
+                </div>
+              )}
             </div>
-          </aside>
-        </div>
-      </section>
+          );
+        })}
 
-      {/* Disciplines and Footer Metadata */}
-      <footer className="archival-footer">
-        <div className="archival-disciplines">
-          <span className="archival-disciplines-label">TAGGED DISCIPLINES:</span>
-          {project.disciplines?.map((d) => (
-            <span key={d} className="archival-discipline-pill">{d}</span>
-          ))}
+        {/* Floating Dossier Card */}
+        <div className={`floating-dossier-card ${activeArtifactId ? 'is-expanded' : 'dossier-collapsed'}`}>
+          {!activeArtifactId ? (
+            <div className="dossier-label">Reading Area</div>
+          ) : (
+            <div className="dossier-content">
+              <div className="dossier-header">
+                <span className="dossier-badge">{activeArtifact.type.toUpperCase()}</span>
+                <span className="dossier-year">{activeArtifact.year || '1995'}</span>
+              </div>
+              <h3 className="dossier-title">{activeArtifact.title}</h3>
+              <p className="dossier-desc">{activeArtifact.description}</p>
+              
+              <div className="dossier-actions">
+                <button className="dossier-btn-download" onClick={() => playButtonClickSound()}>Download</button>
+                <button className="dossier-btn-action" onClick={() => {
+                  playButtonClickSound();
+                  setActiveArtifactId(null);
+                }}>×</button>
+              </div>
+            </div>
+          )}
         </div>
-
-        <button
-          type="button"
-          className="archival-footer-back"
-          onClick={handleBackClick}
-        >
-          ← RETURN TO ALL PROJECTS
-        </button>
-      </footer>
-    </article>
-  )
+      </div>
+    </div>
+  );
 }

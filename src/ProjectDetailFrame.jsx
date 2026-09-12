@@ -46,16 +46,6 @@ export default function ProjectDetailFrame({ project, onBack, onNavigate }) {
       <div className="project-showcase">
         <div className="showcase-card main-card">
           <img src={project.cover} alt={project.name} className="showcase-img" />
-          <div className="showcase-overlay">
-            <div className="showcase-icon">⌘</div>
-            <h3 className="showcase-title">{project.name} Overview</h3>
-            <p className="showcase-desc">{project.description}</p>
-          </div>
-          <div className="health-score-box">
-            <div className="score-label">Performance Score</div>
-            <div className="score-number">98</div>
-            <div className="score-label">out of 100</div>
-          </div>
         </div>
 
         {project.artifacts?.slice(0, 3).map((artifact, idx) => {
@@ -69,11 +59,6 @@ export default function ProjectDetailFrame({ project, onBack, onNavigate }) {
                 className="showcase-img" 
                 style={{ objectPosition: positions[idx % positions.length] }} 
               />
-              <div className="showcase-overlay">
-                <div className="showcase-icon">✧</div>
-                <h3 className="showcase-title">{artifact.subtitle || artifact.title}</h3>
-                <p className="showcase-desc">{artifact.description}</p>
-              </div>
             </div>
           );
         })}

@@ -1,8 +1,8 @@
 .project-detail-container {
   width: 100%;
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 2rem;
+  min-height: 100svh;
+  box-sizing: border-box;
+  padding: 40px 6vw 60px;
   color: var(--text-primary, #e2e8f0);
   font-family: 'DM Mono', monospace;
   display: flex;
@@ -121,6 +121,9 @@
   }
 }
 @media (max-width: 768px) {
+  .project-detail-container {
+    padding: 24px 5vw 48px;
+  }
   .project-showcase {
     grid-template-columns: 1fr;
   }

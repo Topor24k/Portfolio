@@ -1,0 +1,147 @@
+.projects-view {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4vw 1.5vh;
+  animation: projects-fade-in .5s cubic-bezier(.16, 1, .3, 1) both;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+/* Grid variant — projects page uses top-aligned flow instead of centered */
+.projects-view--grid {
+  justify-content: flex-start;
+  align-items: stretch;
+  padding: 130px 6vw 60px;
+}
+
+@keyframes projects-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── Section header ─────────────────────────────────────── */
+
+.projects-header {
+  text-align: left;
+  margin-bottom: 48px;
+}
+
+.projects-eyebrow {
+  margin: 0 0 12px;
+  color: #a5673a;
+  font-size: clamp(10px, 1vw, 13px);
+  font-weight: 500;
+  letter-spacing: .35em;
+  text-transform: uppercase;
+}
+
+.dark .projects-eyebrow {
+  color: #d6a77a;
+}
+
+.projects-title {
+  margin: 0;
+  font-family: 'Oswald', Impact, sans-serif;
+  font-size: clamp(3rem, 8vw, 7rem);
+  font-weight: 700;
+  letter-spacing: -.03em;
+  line-height: .9;
+  text-transform: uppercase;
+}
+
+/* ── Card grid ──────────────────────────────────────────── */
+
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 48px 40px;
+  padding-bottom: 20px;
+}
+
+/* ── Coming soon placeholders (about / contact) ─────────── */
+
+.coming-soon-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.coming-soon-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.coming-soon-eyebrow {
+  margin: 0 0 16px;
+  color: #b58348;
+  font-size: clamp(12px, 1.2vw, 15px);
+  font-weight: 500;
+  letter-spacing: .35em;
+  text-transform: uppercase;
+}
+
+.dark .coming-soon-eyebrow {
+  color: #d6a77a;
+}
+
+.coming-soon-title {
+  margin: 0;
+  font-family: 'Oswald', Impact, sans-serif;
+  font-size: clamp(4rem, 12vw, 10.5rem);
+  font-weight: 700;
+  letter-spacing: -.03em;
+  line-height: .9;
+  text-transform: uppercase;
+}
+
+/* ── Responsive ─────────────────────────────────────────── */
+
+@media (max-width: 900px) {
+  .projects-view--grid {
+    padding: 120px 5vw 50px;
+  }
+
+  .projects-grid {
+    gap: 36px 30px;
+  }
+
+  .projects-header {
+    margin-bottom: 36px;
+  }
+}
+
+@media (max-width: 640px) {
+  .projects-view { padding: 20px 4vw 40px; }
+  .coming-soon-eyebrow { letter-spacing: .25em; font-size: 11px; }
+  .coming-soon-title { font-size: clamp(3rem, 15vw, 5.5rem); }
+
+  .projects-view--grid {
+    padding: 110px 5vw 40px;
+  }
+
+  .projects-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .projects-header {
+    margin-bottom: 28px;
+  }
+
+  .projects-title {
+    font-size: clamp(2.4rem, 12vw, 4.5rem);
+  }
+}

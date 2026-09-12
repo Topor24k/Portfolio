@@ -1,0 +1,73 @@
+.page-wipe {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.page-wipe-panel {
+  position: absolute;
+  inset: -12% -9%;
+  display: block;
+  transform: translateX(-118%) skewX(-10deg);
+  transform-origin: 50% 50%;
+  animation: color-wipe 1.28s cubic-bezier(.77, 0, .18, 1) both;
+}
+
+.panel-coral { background: #f04b42; animation-delay: 0s; }
+.panel-gold { background: #c08a55; animation-delay: .075s; }
+.panel-ink { background: #101010; animation-delay: .15s; }
+.panel-paper { background: #f5f2ec; animation-delay: .225s; }
+
+.page-wipe-caption {
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  color: #101010;
+  transform: translate(-50%, -50%);
+  animation: wipe-caption 1.28s ease both;
+}
+
+.page-wipe-caption small {
+  font-family: 'DM Mono', 'Courier New', monospace;
+  font-size: 10px;
+  letter-spacing: .32em;
+}
+
+.page-wipe-caption strong {
+  font-family: 'Oswald', Impact, 'Arial Narrow', sans-serif;
+  font-size: clamp(3rem, 8vw, 8rem);
+  font-weight: 700;
+  letter-spacing: -.04em;
+  line-height: .85;
+}
+
+@keyframes color-wipe {
+  0% { transform: translateX(-118%) skewX(-10deg); }
+  34% { transform: translateX(0) skewX(-10deg); }
+  58% { transform: translateX(0) skewX(-10deg); }
+  100% { transform: translateX(118%) skewX(-10deg); }
+}
+
+@keyframes wipe-caption {
+  0%, 25% { opacity: 0; transform: translate(-50%, -50%) scale(.92); }
+  38%, 62% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  82%, 100% { opacity: 0; transform: translate(-50%, -50%) scale(1.04); }
+}
+
+@media (max-width: 640px) {
+  .page-wipe-caption { gap: 7px; }
+  .page-wipe-caption small { font-size: 8px; }
+  .page-wipe-caption strong { font-size: clamp(2.7rem, 15vw, 5rem); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-wipe-panel { animation-duration: .01ms; animation-delay: 0s; }
+  .page-wipe-caption { animation-duration: .01ms; }
+}

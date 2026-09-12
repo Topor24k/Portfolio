@@ -184,11 +184,15 @@
 }
 
 .carousel-side-btn.prev-side-btn {
-  left: clamp(1rem, 2.5vw, 2.5rem);
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .carousel-side-btn.next-side-btn {
-  right: clamp(1rem, 2.5vw, 2.5rem);
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .carousel-side-btn:hover {

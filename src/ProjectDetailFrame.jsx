@@ -23,6 +23,14 @@ export default function ProjectDetailFrame({ project, onBack, onNavigate }) {
   // Generate gallery items
   const galleryItems = useMemo(() => {
     if (!project) return [];
+
+    if (project.gallery && project.gallery.length > 0) {
+      return project.gallery.map((img, i) => ({
+        id: `gallery-${i}`,
+        src: typeof img === 'string' ? img : img.src,
+        pos: 'center center',
+      }));
+    }
     
     // Default positions for styling variation if the same image is reused
     const sidePositions = ['left center', 'center center', 'right center'];
@@ -46,8 +54,11 @@ export default function ProjectDetailFrame({ project, onBack, onNavigate }) {
 
   if (!project) return null;
 
-  const mainItem = galleryItems[mainIndex];
-  const sideItems = galleryItems.map((item, index) => ({...item, originalIndex: index})).filter((_, index) => index !== mainIndex);
+  const currentMainIndex = mainIndex < galleryItems.length ? mainIndex : 0;
+  const mainItem = galleryItems[currentMainIndex] || galleryItems[0];
+  const sideItems = galleryItems
+    .map((item, index) => ({ ...item, originalIndex: index }))
+    .filter((_, index) => index !== currentMainIndex);
 
   return (
     <div className="project-detail-container">

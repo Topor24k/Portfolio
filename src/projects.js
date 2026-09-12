@@ -16,8 +16,17 @@ export const projects = [
     disciplines: ['Web design', 'UI/UX', 'Development'],
     cover: '/Project%20Images/Qetsiyah%20Eco%20Park.png',
     alt: 'Qetsiyah Eco Park website design',
+    gallery: [
+      '/Qetsiyah%20Project%20Pictures/Screenshot%202026-09-02%20210318.png',
+      '/Qetsiyah%20Project%20Pictures/Screenshot%202026-09-12%20212019.png',
+      '/Qetsiyah%20Project%20Pictures/Screenshot%202026-09-12%20212101.png',
+      '/Qetsiyah%20Project%20Pictures/Screenshot%202026-09-12%20212131.png',
+    ],
     images: [
-      { src: '/Project%20Images/Qetsiyah%20Eco%20Park.png', alt: 'Qetsiyah Eco Park website homepage', caption: '01 / Homepage' },
+      { src: '/Qetsiyah%20Project%20Pictures/Screenshot%202026-09-02%20210318.png', alt: 'Qetsiyah Eco Park website homepage', caption: '01 / Homepage' },
+      { src: '/Qetsiyah%20Project%20Pictures/Screenshot%202026-09-12%20212019.png', alt: 'Qetsiyah Eco Park features overview', caption: '02 / Features' },
+      { src: '/Qetsiyah%20Project%20Pictures/Screenshot%202026-09-12%20212101.png', alt: 'Qetsiyah Eco Park events booking section', caption: '03 / Booking' },
+      { src: '/Qetsiyah%20Project%20Pictures/Screenshot%202026-09-12%20212131.png', alt: 'Qetsiyah Eco Park park amenities', caption: '04 / Amenities' },
     ],
     link: 'https://github.com/Topor24k/Qetsiyah-Eco-Park',
     artifacts: [

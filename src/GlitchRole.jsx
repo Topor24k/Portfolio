@@ -33,7 +33,9 @@ export default function GlitchRole() {
 
   const triggerGlitch = (fromText, toText) => {
     setIsGlitching(true)
-    playGlitchSound()
+    if (!document.hidden) {
+      playGlitchSound()
+    }
     const startTime = performance.now()
     const duration = 480 // Cyberpunk scramble & slice duration (480ms)
 

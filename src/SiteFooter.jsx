@@ -14,6 +14,28 @@ export default function SiteFooter() {
   const [displayText, setDisplayText] = useState(FOOTER_TEXTS[0])
   const [isGlitching, setIsGlitching] = useState(false)
   const animFrameRef = useRef(null)
+  const footerRef = useRef(null)
+  const isVisibleRef = useRef(false)
+
+  useEffect(() => {
+    if (!('IntersectionObserver' in window)) {
+      isVisibleRef.current = true
+      return
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isVisibleRef.current = Boolean(entry && entry.isIntersecting)
+      },
+      { threshold: 0.1 }
+    )
+
+    if (footerRef.current) {
+      observer.observe(footerRef.current)
+    }
+
+    return () => observer.disconnect()
+  }, [])
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -32,7 +54,9 @@ export default function SiteFooter() {
 
   const triggerGlitch = (fromText, toText) => {
     setIsGlitching(true)
-    playGlitchSound()
+    if (isVisibleRef.current && !document.hidden) {
+      playGlitchSound()
+    }
     const startTime = performance.now()
     const duration = 480 
 
@@ -66,7 +90,7 @@ export default function SiteFooter() {
   }
 
   return (
-    <footer className="site-footer" aria-labelledby="footer-wordmark">
+    <footer ref={footerRef} className="site-footer" aria-labelledby="footer-wordmark">
       <div className="footer-master-container">
         <div className="footer-wordmark-wrap">
           <h2 

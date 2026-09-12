@@ -51,6 +51,8 @@ function App() {
       if (button.closest('.badge-holder')) return
       // If clicking a nav link, handleNavigate handles the nav sound
       if (button.classList.contains('nav-link')) return
+      // If clicking the sound toggle button, it handles its own click sound explicitly
+      if (button.classList.contains('sound-toggle-btn')) return
       playButtonClickSound()
     }
     window.addEventListener('click', handleGlobalClick, { capture: true })
@@ -105,12 +107,19 @@ function App() {
       <PageWipe active={isPageTransitioning} label={transitionLabel} />
       <header className={`site-header${isScrolled ? ' is-scrolled' : ''}`}>
         <button
-          className="utility-button"
+          className="utility-button sound-toggle-btn"
           type="button"
           onClick={() => {
             const next = !soundOn
-            setSoundOn(next)
-            setSoundMuted(!next)
+            if (next) {
+              setSoundMuted(false)
+              setSoundOn(true)
+              playButtonClickSound()
+            } else {
+              playButtonClickSound()
+              setSoundMuted(true)
+              setSoundOn(false)
+            }
           }}
         >
           SOUND: {soundOn ? 'ON' : 'OFF'}

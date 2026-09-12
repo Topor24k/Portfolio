@@ -63,13 +63,12 @@
   color: #cbd5e1;
 }
 
-/* Project Showcase Gallery (replaces Archival Desk) */
+/* Project Showcase Gallery */
 .project-showcase {
   display: grid;
   grid-template-columns: 3.5fr 1fr 1fr 1fr;
   gap: 12px;
   margin-top: 3rem;
-  height: 520px;
 }
 
 .showcase-card {
@@ -88,101 +87,24 @@
 }
 
 .showcase-img {
-  position: absolute;
-  top: 0;
-  left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  display: block;
 }
 
-.showcase-card:hover .showcase-img {
-  transform: scale(1.05);
-  filter: brightness(0.9);
-}
-
-.showcase-card::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 60%;
-  background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 100%);
-  z-index: 2;
-  pointer-events: none;
-}
-
-.showcase-overlay {
+/* Main card: image flows naturally to set the frame size */
+.main-card .showcase-img {
   position: relative;
-  z-index: 3;
-  padding: 1.5rem;
-  color: #fff;
-  pointer-events: none;
+  height: auto;
+  object-fit: contain;
 }
 
-.showcase-icon {
-  font-size: 1.2rem;
-  margin-bottom: 0.5rem;
-  opacity: 0.8;
-}
-
-.showcase-title {
-  font-family: 'DM Mono', monospace;
-  font-size: 1rem;
-  font-weight: 600;
-  margin: 0 0 0.5rem 0;
-  line-height: 1.2;
-}
-
-.main-card .showcase-title {
-  font-size: 1.4rem;
-}
-
-.showcase-desc {
-  font-size: 0.85rem;
-  margin: 0;
-  opacity: 0.8;
-  line-height: 1.4;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.side-card .showcase-desc {
-  display: none;
-}
-
-.health-score-box {
+/* Side cards: image fills the tall frame */
+.side-card .showcase-img {
   position: absolute;
-  bottom: 1.5rem;
-  right: 1.5rem;
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  padding: 1rem 1.5rem;
-  border-radius: 8px;
-  z-index: 3;
-  color: white;
-  text-align: center;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  pointer-events: none;
-}
-
-.health-score-box .score-number {
-  font-family: 'Oswald', sans-serif;
-  font-size: 3rem;
-  line-height: 1;
-  margin: 0.25rem 0;
-}
-
-.health-score-box .score-label {
-  font-size: 0.65rem;
-  text-transform: uppercase;
-  opacity: 0.8;
-  letter-spacing: 0.05em;
+  top: 0;
+  left: 0;
 }
 
 @media (max-width: 1024px) {

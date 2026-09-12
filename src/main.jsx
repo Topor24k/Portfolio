@@ -8,7 +8,7 @@ import NavigationMenu from './NavigationMenu'
 import GlitchRole from './GlitchRole'
 import PageWipe from './PageWipe'
 import SiteFooter from './SiteFooter'
-import { setSoundMuted } from './soundEffects'
+import { setSoundMuted, playNavSound, playButtonClickSound } from './soundEffects'
 
 function App() {
   const [isLight, setIsLight] = useState(false)
@@ -43,6 +43,20 @@ function App() {
     return () => window.removeEventListener('scroll', updateScrollState)
   }, [])
 
+  useEffect(() => {
+    const handleGlobalClick = (event) => {
+      const button = event.target.closest('button, [role="button"]')
+      if (!button) return
+      // If clicking the badge card to flip, the switch sound is handled in HangingBadge
+      if (button.closest('.badge-holder')) return
+      // If clicking a nav link, handleNavigate handles the nav sound
+      if (button.classList.contains('nav-link')) return
+      playButtonClickSound()
+    }
+    window.addEventListener('click', handleGlobalClick, { capture: true })
+    return () => window.removeEventListener('click', handleGlobalClick, { capture: true })
+  }, [])
+
   const openBusinessCard = () => {
     if (isCardOpen || currentView !== 'home' || Date.now() < reopenAfter.current) return
     setIsCardOpen(true)
@@ -67,6 +81,7 @@ function App() {
   const handleNavigate = (destination) => {
     if (destination === currentView || isPageTransitioning) return
 
+    playNavSound()
     transitionTimers.current.forEach((timer) => window.clearTimeout(timer))
     setTransitionLabel(viewLabels[destination] || 'HOME')
     setIsCardOpen(false)

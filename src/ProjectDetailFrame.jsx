@@ -1,8 +1,10 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useState, useMemo } from 'react';
 import './project-detail-frame.css';
-import { playNavSound } from './soundEffects';
+import { playNavSound, playButtonClickSound } from './soundEffects';
 
 export default function ProjectDetailFrame({ project, onBack, onNavigate }) {
+  const [mainIndex, setMainIndex] = useState(0);
+
   const handleBack = useCallback(() => {
     playNavSound();
     if (onBack) onBack();
@@ -18,7 +20,34 @@ export default function ProjectDetailFrame({ project, onBack, onNavigate }) {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleBack]);
 
+  // Generate gallery items
+  const galleryItems = useMemo(() => {
+    if (!project) return [];
+    
+    // Default positions for styling variation if the same image is reused
+    const sidePositions = ['left center', 'center center', 'right center'];
+    
+    const items = [
+      { id: 'cover', src: project.cover, pos: 'center center' }
+    ];
+    
+    if (project.artifacts) {
+      project.artifacts.slice(0, 3).forEach((artifact, i) => {
+        items.push({
+          id: artifact.id,
+          src: artifact.image || project.cover,
+          pos: sidePositions[i % 3]
+        });
+      });
+    }
+    
+    return items;
+  }, [project]);
+
   if (!project) return null;
+
+  const mainItem = galleryItems[mainIndex];
+  const sideItems = galleryItems.map((item, index) => ({...item, originalIndex: index})).filter((_, index) => index !== mainIndex);
 
   return (
     <div className="project-detail-container">
@@ -45,23 +74,31 @@ export default function ProjectDetailFrame({ project, onBack, onNavigate }) {
       {/* Project Showcase Gallery */}
       <div className="project-showcase">
         <div className="showcase-card main-card">
-          <img src={project.cover} alt={project.name} className="showcase-img" />
+          <img 
+            src={mainItem.src} 
+            alt="Main showcase" 
+            className="showcase-img" 
+            style={{ objectPosition: mainItem.pos }}
+          />
         </div>
 
-        {project.artifacts?.slice(0, 3).map((artifact, idx) => {
-          // Adjust object-position so the same image looks slightly different in each column
-          const positions = ['left center', 'center center', 'right center'];
-          return (
-            <div key={artifact.id} className="showcase-card side-card">
-              <img 
-                src={project.cover} 
-                alt={artifact.title} 
-                className="showcase-img" 
-                style={{ objectPosition: positions[idx % positions.length] }} 
-              />
-            </div>
-          );
-        })}
+        {sideItems.map((item) => (
+          <div 
+            key={item.id} 
+            className="showcase-card side-card"
+            onClick={() => {
+              playButtonClickSound();
+              setMainIndex(item.originalIndex);
+            }}
+          >
+            <img 
+              src={item.src} 
+              alt="Side showcase" 
+              className="showcase-img" 
+              style={{ objectPosition: item.pos }} 
+            />
+          </div>
+        ))}
       </div>
     </div>
   );

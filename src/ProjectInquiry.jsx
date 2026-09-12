@@ -2,13 +2,13 @@ export default function ProjectInquiry() {
   const handleSubmit = (event) => {
     event.preventDefault()
     const data = new FormData(event.currentTarget)
-    const name = data.get('name')?.toString().trim() || 'Portfolio visitor'
+    const name = data.get('name')?.toString().trim() || 'Prospective client'
     const email = data.get('email')?.toString().trim() || 'Not provided'
-    const service = data.get('service')?.toString() || 'General project inquiry'
-    const message = data.get('message')?.toString().trim() || 'I would like to discuss a project.'
-    const subject = encodeURIComponent(`Project inquiry — ${name}`)
+    const business = data.get('business')?.toString().trim() || 'Not provided'
+    const message = data.get('message')?.toString().trim() || 'I would like to build a website for my business.'
+    const subject = encodeURIComponent(`Website inquiry — ${business}`)
     const body = encodeURIComponent(
-      `Hello Kayeen,\n\n${message}\n\nProject type: ${service}\nName: ${name}\nEmail: ${email}`,
+      `Hello Kayeen,\n\nI’d like to build my first website with you and your team.\n\nAbout my business:\n${message}\n\nBusiness name: ${business}\nContact name: ${name}\nEmail: ${email}`,
     )
 
     window.location.href = `mailto:kayeencampana@gmail.com?subject=${subject}&body=${body}`
@@ -17,14 +17,14 @@ export default function ProjectInquiry() {
   return (
     <section className="project-inquiry" aria-labelledby="project-inquiry-title">
       <div className="project-inquiry-intro">
-        <p className="project-inquiry-kicker">Contact me</p>
-        <h2 id="project-inquiry-title">Start Your<br /><span>Project.</span></h2>
+        <p className="project-inquiry-kicker">Contact</p>
+        <h2 id="project-inquiry-title"><span className="project-inquiry-heading-line">Build Your</span><span>First Website.</span></h2>
         <p className="project-inquiry-summary">
-          Have an idea worth building? Tell me where you want to take it, and we’ll shape a clear path forward.
+          Give your business a digital home. Work with me and my team to turn your story, services, and goals into a website built to grow with you.
         </p>
         <div className="project-inquiry-meta" aria-hidden="true">
-          <span>Open for selected work</span>
-          <span>01 / Inquiry desk</span>
+          <span>Made for growing businesses</span>
+          <span>01 / Client inquiry</span>
         </div>
       </div>
 
@@ -40,29 +40,23 @@ export default function ProjectInquiry() {
           </label>
         </div>
 
-        <label className="project-field project-field--select">
-          <span>I’m interested in</span>
-          <select name="service" defaultValue="Web design and development" required>
-            <option>Web design and development</option>
-            <option>Front-end development</option>
-            <option>Full-stack web platform</option>
-            <option>UI/UX design</option>
-            <option>Creative collaboration</option>
-          </select>
+        <label className="project-field">
+          <span>What is the name of your business?</span>
+          <input name="business" type="text" autoComplete="organization" required />
         </label>
 
         <label className="project-field project-field--message">
-          <span>Tell me about your project</span>
+          <span>Tell me about your business</span>
           <textarea name="message" rows="4" required />
         </label>
 
         <div className="project-inquiry-footer">
           <label className="project-consent">
             <input name="consent" type="checkbox" required />
-            <span>I agree to be contacted about this project.</span>
+            <span>I agree to be contacted about my website.</span>
           </label>
           <button className="project-inquiry-submit" type="submit">
-            Start a conversation <span aria-hidden="true">↗</span>
+            Build my website <span aria-hidden="true">↗</span>
           </button>
         </div>
       </form>

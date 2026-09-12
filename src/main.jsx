@@ -10,21 +10,78 @@ import PageWipe from './PageWipe'
 import SiteFooter from './SiteFooter'
 import { setSoundMuted, playNavSound, playButtonClickSound } from './soundEffects'
 
+const VALID_VIEWS = ['home', 'projects', 'about', 'contact']
+
+function parseHash(hashStr) {
+  const clean = (hashStr || '').replace(/^#\/?/, '').trim()
+  if (!clean) return null
+  if (clean.startsWith('project/')) {
+    return { view: 'projects', projectId: clean.replace('project/', '') }
+  }
+  if (clean === 'projects' || clean === 'project') {
+    return { view: 'projects', projectId: null }
+  }
+  if (VALID_VIEWS.includes(clean)) {
+    return { view: clean, projectId: null }
+  }
+  return null
+}
+
+function getInitialNavigation() {
+  if (typeof window === 'undefined') {
+    return { view: 'home', projectId: null }
+  }
+
+  // 1. Check URL hash first
+  const fromHash = parseHash(window.location.hash)
+  if (fromHash) {
+    try {
+      sessionStorage.setItem('kc_portfolio_view', fromHash.view)
+      localStorage.setItem('kc_portfolio_view', fromHash.view)
+      if (fromHash.projectId) {
+        sessionStorage.setItem('kc_portfolio_project', fromHash.projectId)
+        localStorage.setItem('kc_portfolio_project', fromHash.projectId)
+      } else {
+        sessionStorage.removeItem('kc_portfolio_project')
+        localStorage.removeItem('kc_portfolio_project')
+      }
+    } catch (e) {}
+    return fromHash
+  }
+
+  // 2. Check storage fallback (survives hard refresh or HMR even if hash was missing)
+  try {
+    const savedView = sessionStorage.getItem('kc_portfolio_view') || localStorage.getItem('kc_portfolio_view')
+    const savedProject = sessionStorage.getItem('kc_portfolio_project') || localStorage.getItem('kc_portfolio_project')
+    if (savedView && VALID_VIEWS.includes(savedView) && savedView !== 'home') {
+      if (savedView === 'projects' && savedProject) {
+        window.history.replaceState(null, '', `#project/${savedProject}`)
+        return { view: 'projects', projectId: savedProject }
+      }
+      window.history.replaceState(null, '', `#${savedView}`)
+      return { view: savedView, projectId: null }
+    }
+  } catch (e) {}
+
+  return { view: 'home', projectId: null }
+}
+
 function App() {
   const [isLight, setIsLight] = useState(false)
   const [soundOn, setSoundOn] = useState(true)
   const [isCardOpen, setIsCardOpen] = useState(false)
   const [isProjectDetailOpen, setIsProjectDetailOpen] = useState(() => {
-    return typeof window !== 'undefined' && window.location.hash.startsWith('#project/');
+    return Boolean(getInitialNavigation().projectId)
   })
   const [currentView, setCurrentView] = useState(() => {
-    const hash = window.location.hash.replace('#', '')
-    if (hash.startsWith('project')) return 'projects'
-    return ['projects', 'about', 'contact'].includes(hash) ? hash : 'home'
+    return getInitialNavigation().view
   })
   const [isPageTransitioning, setIsPageTransitioning] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
-  const [transitionLabel, setTransitionLabel] = useState('HOME')
+  const [transitionLabel, setTransitionLabel] = useState(() => {
+    const view = getInitialNavigation().view
+    return view === 'about' ? 'ABOUT ME' : view.toUpperCase()
+  })
   const reopenAfter = useRef(0)
   const transitionTimers = useRef([])
 
@@ -37,6 +94,28 @@ function App() {
 
   useEffect(() => () => {
     transitionTimers.current.forEach((timer) => window.clearTimeout(timer))
+  }, [])
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      const parsed = parseHash(window.location.hash) || { view: 'home', projectId: null }
+      setCurrentView((prev) => (prev !== parsed.view ? parsed.view : prev))
+      setIsProjectDetailOpen(Boolean(parsed.projectId))
+      try {
+        sessionStorage.setItem('kc_portfolio_view', parsed.view)
+        localStorage.setItem('kc_portfolio_view', parsed.view)
+        if (parsed.projectId) {
+          sessionStorage.setItem('kc_portfolio_project', parsed.projectId)
+          localStorage.setItem('kc_portfolio_project', parsed.projectId)
+        } else {
+          sessionStorage.removeItem('kc_portfolio_project')
+          localStorage.removeItem('kc_portfolio_project')
+        }
+      } catch (e) {}
+    }
+
+    window.addEventListener('hashchange', handleHashChange)
+    return () => window.removeEventListener('hashchange', handleHashChange)
   }, [])
 
   useEffect(() => {
@@ -78,11 +157,27 @@ function App() {
 
   const handleOpenProjects = () => {
     setCurrentView('projects')
+    setIsProjectDetailOpen(false)
+    window.location.hash = 'projects'
+    try {
+      sessionStorage.setItem('kc_portfolio_view', 'projects')
+      sessionStorage.removeItem('kc_portfolio_project')
+      localStorage.setItem('kc_portfolio_view', 'projects')
+      localStorage.removeItem('kc_portfolio_project')
+    } catch (e) {}
     window.scrollTo({ top: 0, behavior: 'instant' })
   }
 
   const handleBackToHome = () => {
     setCurrentView('home')
+    setIsProjectDetailOpen(false)
+    window.history.replaceState(null, '', window.location.pathname + window.location.search)
+    try {
+      sessionStorage.setItem('kc_portfolio_view', 'home')
+      sessionStorage.removeItem('kc_portfolio_project')
+      localStorage.setItem('kc_portfolio_view', 'home')
+      localStorage.removeItem('kc_portfolio_project')
+    } catch (e) {}
     reopenAfter.current = Date.now() + 800
     window.scrollTo({ top: 0, behavior: 'instant' })
   }
@@ -98,8 +193,23 @@ function App() {
 
     const swapTimer = window.setTimeout(() => {
       setCurrentView(destination)
+      setIsProjectDetailOpen(false)
       reopenAfter.current = Date.now() + 800
       window.scrollTo({ top: 0, behavior: 'instant' })
+
+      const targetHash = destination === 'home' ? '' : destination
+      if (targetHash) {
+        window.location.hash = targetHash
+      } else {
+        window.history.replaceState(null, '', window.location.pathname + window.location.search)
+      }
+
+      try {
+        sessionStorage.setItem('kc_portfolio_view', destination)
+        sessionStorage.removeItem('kc_portfolio_project')
+        localStorage.setItem('kc_portfolio_view', destination)
+        localStorage.removeItem('kc_portfolio_project')
+      } catch (e) {}
     }, 590)
 
     const finishTimer = window.setTimeout(() => {

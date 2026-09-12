@@ -188,6 +188,14 @@
 
 .project-inquiry-intro h2 span { color: #f04b42; }
 
+.project-inquiry-intro h2 .project-inquiry-heading-line {
+  display: block;
+  white-space: nowrap;
+  color: var(--inquiry-ink);
+}
+
+.project-inquiry-intro h2 > span:last-child { display: block; }
+
 .project-inquiry-summary {
   max-width: 32rem;
   margin: 1.75rem 0 0;
@@ -235,7 +243,6 @@
 }
 
 .project-field input,
-.project-field select,
 .project-field textarea {
   width: 100%;
   border: 0;
@@ -250,12 +257,6 @@
 }
 
 .project-field input { height: 2rem; }
-.project-field select {
-  height: 2.4rem;
-  padding: 0 2rem 0 0;
-  color-scheme: light dark;
-  cursor: pointer;
-}
 
 .project-field textarea {
   min-height: 7rem;
@@ -264,7 +265,6 @@
 }
 
 .project-field input:focus,
-.project-field select:focus,
 .project-field textarea:focus {
   border-bottom-color: #f04b42;
 }

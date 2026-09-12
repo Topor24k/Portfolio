@@ -7,9 +7,18 @@ import ProjectInquiry from './ProjectInquiry'
 
 export default function ProjectsView({ view = 'projects', onNavigate, setIsProjectDetailOpen }) {
   const [selectedProject, setSelectedProject] = useState(() => {
-    if (typeof window !== 'undefined' && window.location.hash.startsWith('#project/')) {
-      const id = window.location.hash.replace('#project/', '')
-      return projects.find((p) => p.id === id) || null
+    if (typeof window !== 'undefined') {
+      const hash = window.location.hash.replace(/^#\/?/, '').trim()
+      if (hash.startsWith('project/')) {
+        const id = hash.replace('project/', '')
+        return projects.find((p) => p.id === id) || null
+      }
+      try {
+        const savedProject = sessionStorage.getItem('kc_portfolio_project') || localStorage.getItem('kc_portfolio_project')
+        if (savedProject) {
+          return projects.find((p) => p.id === savedProject) || null
+        }
+      } catch (e) {}
     }
     return null
   })
@@ -19,6 +28,46 @@ export default function ProjectsView({ view = 'projects', onNavigate, setIsProje
       setIsProjectDetailOpen(!!selectedProject)
     }
   }, [selectedProject, setIsProjectDetailOpen])
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash.replace(/^#\/?/, '').trim()
+      if (hash.startsWith('project/')) {
+        const id = hash.replace('project/', '')
+        const found = projects.find((p) => p.id === id) || null
+        setSelectedProject(found)
+      } else {
+        setSelectedProject(null)
+      }
+    }
+
+    window.addEventListener('hashchange', handleHashChange)
+    return () => window.removeEventListener('hashchange', handleHashChange)
+  }, [])
+
+  const handleSelectProject = (proj) => {
+    setSelectedProject(proj)
+    window.location.hash = `project/${proj.id}`
+    try {
+      sessionStorage.setItem('kc_portfolio_view', 'projects')
+      sessionStorage.setItem('kc_portfolio_project', proj.id)
+      localStorage.setItem('kc_portfolio_view', 'projects')
+      localStorage.setItem('kc_portfolio_project', proj.id)
+    } catch (e) {}
+    window.scrollTo({ top: 0, behavior: 'instant' })
+  }
+
+  const handleBackToProjects = () => {
+    setSelectedProject(null)
+    window.location.hash = 'projects'
+    try {
+      sessionStorage.setItem('kc_portfolio_view', 'projects')
+      sessionStorage.removeItem('kc_portfolio_project')
+      localStorage.setItem('kc_portfolio_view', 'projects')
+      localStorage.removeItem('kc_portfolio_project')
+    } catch (e) {}
+    window.scrollTo({ top: 0, behavior: 'instant' })
+  }
 
   const titles = {
     about: {
@@ -51,7 +100,7 @@ export default function ProjectsView({ view = 'projects', onNavigate, setIsProje
     return (
       <ProjectDetailFrame
         project={selectedProject}
-        onBack={() => setSelectedProject(null)}
+        onBack={handleBackToProjects}
         onNavigate={onNavigate}
       />
     )
@@ -87,10 +136,7 @@ export default function ProjectsView({ view = 'projects', onNavigate, setIsProje
               key={project.id}
               project={project}
               index={i}
-              onSelect={(proj) => {
-                setSelectedProject(proj)
-                window.scrollTo({ top: 0, behavior: 'instant' })
-              }}
+              onSelect={handleSelectProject}
             />
           ))}
         </div>
@@ -111,10 +157,7 @@ export default function ProjectsView({ view = 'projects', onNavigate, setIsProje
               key={project.id}
               project={project}
               index={clientProjects.length + i}
-              onSelect={(proj) => {
-                setSelectedProject(proj)
-                window.scrollTo({ top: 0, behavior: 'instant' })
-              }}
+              onSelect={handleSelectProject}
             />
           ))}
         </div>

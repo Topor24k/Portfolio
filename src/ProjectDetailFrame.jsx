@@ -2,6 +2,41 @@ import React, { useEffect, useCallback, useState, useMemo, useRef } from 'react'
 import './project-detail-frame.css';
 import { playButtonClickSound } from './soundEffects';
 
+function ProjectTeam({ project }) {
+  const members = project.team || [];
+  if (!members.length) return null;
+
+  return (
+    <section className="project-team" aria-labelledby={`project-team-${project.id}`}>
+      <header className="project-team-header">
+        <div>
+          <p className="project-team-kicker">People / Project contributors</p>
+          <h2 id={`project-team-${project.id}`} className="project-team-title">Project Credits</h2>
+        </div>
+        <div className="project-team-mark">
+          <span>{project.teamLabel || 'Project Team'}</span>
+          <span>{String(members.length).padStart(2, '0')} / People</span>
+        </div>
+      </header>
+
+      <div className={`project-team-grid project-team-grid--${members.length}`}>
+        {members.map((member, index) => (
+          <article className="project-team-member" key={member.name}>
+            <div className="project-team-photo">
+              <img src={member.image} alt={member.alt} loading="lazy" decoding="async" />
+              <span aria-hidden="true">0{index + 1}</span>
+            </div>
+            <div className="project-team-credit">
+              <h3>{member.name}</h3>
+              <p>{member.role}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 export default function ProjectDetailFrame({ project, onBack, onNavigate }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const pointerRef = useRef({ startX: 0, startY: 0, active: false });
@@ -231,6 +266,8 @@ export default function ProjectDetailFrame({ project, onBack, onNavigate }) {
           </div>
         )}
       </div>
+
+      <ProjectTeam project={project} />
     </div>
   );
 }

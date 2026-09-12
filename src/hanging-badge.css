@@ -154,6 +154,17 @@
   pointer-events: auto;
 }
 
+/* Remove back-face controls before the card retracts. Keeping this tied to the
+   stage state avoids a compositing flash when the 3D card leaves the viewport. */
+.badge-stage.is-closing .badge-projects-overlay,
+.badge-stage:not(.is-open) .badge-projects-overlay {
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: none;
+  pointer-events: none;
+}
+
 .badge-projects-btn {
   display: inline-flex;
   align-items: center;

@@ -1,3 +1,25 @@
+// Shared team profiles keep credits and portraits consistent across projects.
+const teamMembers = {
+  kayeen: {
+    name: 'Kayeen M. Campaña',
+    role: 'Full-Stack Developer',
+    image: '/Native%20Legacy%20Team/Kayeen%20M.%20Campa%C3%B1a.jpg',
+    alt: 'Kayeen M. Campaña, Full-Stack Developer',
+  },
+  allen: {
+    name: 'Allen Jhon Bautista',
+    role: 'Back-End Developer',
+    image: '/Native%20Legacy%20Team/Allen%20Jhon%20Bautista.png',
+    alt: 'Allen Jhon Bautista, Back-End Developer',
+  },
+  bern: {
+    name: 'Bern Francis A. Gutierrez',
+    role: 'Visual Media Director',
+    image: '/Native%20Legacy%20Team/Bern%20Francis%20%20A.%20Gutierrez.png',
+    alt: 'Bern Francis A. Gutierrez, Visual Media Director',
+  },
+}
+
 // Add project imagery and details here; the folder layout adapts automatically.
 export const projects = [
   {
@@ -14,6 +36,8 @@ export const projects = [
       p1: 'The Qetsiyah Eco Park Web Platform is a modern digital experience designed to showcase Qetsiyah Eco Park as a premier eco-tourism, recreation, dining, and private event destination in Sultan Kudarat. The platform brings the park’s peaceful and nature-focused atmosphere online, allowing visitors to explore attractions, dining options, event venues, activities, rates, and essential park information through a responsive and visually engaging experience.',
       p2: 'Beyond showcasing the destination, the platform simplifies how guests plan their visits and send reservations, replacing scattered social media inquiries with a centralized and organized system. Built for families, travelers, adventure seekers, diners, and event organizers, the project combines tourism, hospitality, storytelling, and modern web technology to strengthen Qetsiyah Eco Park’s digital presence and help promote tourism in the surrounding region.',
     },
+    teamLabel: 'Native Legacy',
+    team: [teamMembers.kayeen, teamMembers.allen, teamMembers.bern],
     disciplines: ['Web design', 'UI/UX', 'Development'],
     cover: '/Project%20Images/Qetsiyah%20Eco%20Park.png',
     alt: 'Qetsiyah Eco Park website design',
@@ -94,6 +118,8 @@ export const projects = [
       p1: 'JLD Property Management is a comprehensive real estate operations and accounting platform designed to centralize the management of subdivision properties, buyers, sales brokers, collections, expenses, and employees. It replaces fragmented spreadsheets and manual records with a unified workspace where administrators can monitor property inventory, manage buyer contracts and payment schedules, issue official receipts, track transactions, and maintain accurate financial records across multiple development projects.',
       p2: 'Beyond property management, the platform integrates broker commission tracking, cash disbursements, employee records, loans, payroll, and financial reporting into a connected system. Built for property developers, accounting teams, sales networks, and administrators, JLD Property Management demonstrates how a complex real-world business operation can be transformed into a structured, efficient, and scalable digital platform with greater visibility, accuracy, and control.',
     },
+    teamLabel: 'Native Legacy',
+    team: [teamMembers.kayeen, teamMembers.allen, teamMembers.bern],
     disciplines: ['TypeScript', 'Web design', 'Marketing'],
     cover: '/Project%20Images/JLD.png',
     gallery: [
@@ -168,6 +194,8 @@ export const projects = [
       p1: 'Odyssey is a Southeast Asia slow-travel and expedition platform designed for travelers who value authentic experiences beyond conventional tourism. It brings together firsthand travel stories, curated expedition routes, interactive maps, verified waypoints, and practical field information—helping explorers discover remote destinations, understand routes, and plan journeys across the region with greater confidence.',
       p2: 'The platform also serves as a community-driven travel network, connecting explorers through shared journeys, travel companions, and small-group expeditions. Built around interactive cartography, storytelling, and thoughtful travel planning, Odyssey encourages deeper cultural experiences, responsible exploration, and meaningful connections—turning travel from simply visiting destinations into documenting and sharing the journey itself.',
     },
+    teamLabel: 'Independent Collaboration',
+    team: [teamMembers.kayeen, teamMembers.allen],
     disciplines: ['JavaScript', 'Front-end', 'Interaction'],
     cover: '/Project%20Images/Odyssey.png',
     alt: 'Odyssey project design',
@@ -250,6 +278,8 @@ export const projects = [
       p1: 'Pambuhan Glamping Resort is a modern hospitality and reservation platform designed for an eco-luxury beachfront destination in Mercedes, Camarines Norte. The website captures the resort’s peaceful coastal identity while giving guests an effortless way to explore glamping accommodations, day tours, amenities, dining, island excursions, resort packages, and exclusive event experiences through an immersive and responsive digital experience.',
       p2: 'Beyond the resort showcase, the platform integrates booking and reservation management, real-time availability, dynamic packages, automated confirmations, and an internal operations portal for resort staff. Designed around both the guest journey and day-to-day resort management, the project combines hospitality, tourism, modern web technology, and thoughtful UI/UX to turn online discovery into a seamless path from exploration to reservation.',
     },
+    teamLabel: 'Independent Project',
+    team: [teamMembers.kayeen],
     disciplines: ['React', 'UI/UX', 'Full-stack', 'Reservation System'],
     cover: '/Project%20Images/Pambuhan%20Glamping%20Resort.png',
     alt: 'Pambuhan Glamping Resort web platform',

@@ -3,6 +3,7 @@ import './projects.css'
 import { projects } from './projects'
 import FolderCard from './FolderCard'
 import ProjectDetailFrame from './ProjectDetailFrame'
+import ProjectInquiry from './ProjectInquiry'
 
 export default function ProjectsView({ view = 'projects', onNavigate, setIsProjectDetailOpen }) {
   const [selectedProject, setSelectedProject] = useState(() => {
@@ -118,6 +119,8 @@ export default function ProjectsView({ view = 'projects', onNavigate, setIsProje
           ))}
         </div>
       </section>
+
+      <ProjectInquiry />
     </div>
   )
 }

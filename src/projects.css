@@ -58,6 +58,61 @@
   text-transform: uppercase;
 }
 
+/* ── Project Group Sections ─────────────────────────────── */
+
+.projects-group-section {
+  margin-bottom: 72px;
+  width: 100%;
+}
+
+.projects-group-section:last-of-type {
+  margin-bottom: 24px;
+}
+
+.projects-group-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1.5px solid rgba(16, 16, 16, 0.12);
+  padding-bottom: 16px;
+  margin-bottom: 40px;
+}
+
+.dark .projects-group-header {
+  border-bottom-color: rgba(255, 255, 255, 0.12);
+}
+
+.projects-group-tag {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.projects-group-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #f04b42;
+  display: inline-block;
+}
+
+.projects-group-title {
+  margin: 0;
+  font-family: 'DM Mono', monospace;
+  font-size: clamp(0.95rem, 1.2vw, 1.15rem);
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.projects-group-count {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.85rem;
+  opacity: 0.55;
+  letter-spacing: 0.12em;
+  font-variant-numeric: tabular-nums;
+}
+
 /* ── Card grid ──────────────────────────────────────────── */
 
 .projects-grid {

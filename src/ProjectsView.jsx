@@ -56,28 +56,68 @@ export default function ProjectsView({ view = 'projects', onNavigate, setIsProje
     )
   }
 
+  const clientProjects = projects.filter(
+    (p) => p.projectType === 'client' || p.id === 'qetsiyah-eco-park' || p.id === 'jld-marketing'
+  )
+  const personalProjects = projects.filter(
+    (p) => p.projectType === 'personal' || p.id === 'odyssey'
+  )
+
   return (
     <div className="projects-view projects-view--grid">
       {/* Section header */}
       <header className="projects-header">
-        <p className="projects-eyebrow">PROJECTS</p>
+        <p className="projects-eyebrow">PORTFOLIO ARCHIVE</p>
         <h1 className="projects-title">SELECTED WORK</h1>
       </header>
 
-      {/* Folder card grid */}
-      <div className="projects-grid">
-        {projects.map((project, i) => (
-          <FolderCard
-            key={project.id}
-            project={project}
-            index={i}
-            onSelect={(proj) => {
-              setSelectedProject(proj)
-              window.scrollTo({ top: 0, behavior: 'instant' })
-            }}
-          />
-        ))}
-      </div>
+      {/* Client Projects Section */}
+      <section className="projects-group-section">
+        <div className="projects-group-header">
+          <div className="projects-group-tag">
+            <span className="projects-group-dot" />
+            <h2 className="projects-group-title">CLIENT PROJECTS</h2>
+          </div>
+          <span className="projects-group-count">0{clientProjects.length} / ARCHIVE</span>
+        </div>
+        <div className="projects-grid">
+          {clientProjects.map((project, i) => (
+            <FolderCard
+              key={project.id}
+              project={project}
+              index={i}
+              onSelect={(proj) => {
+                setSelectedProject(proj)
+                window.scrollTo({ top: 0, behavior: 'instant' })
+              }}
+            />
+          ))}
+        </div>
+      </section>
+
+      {/* Personal Projects Section */}
+      <section className="projects-group-section">
+        <div className="projects-group-header">
+          <div className="projects-group-tag">
+            <span className="projects-group-dot" />
+            <h2 className="projects-group-title">PERSONAL PROJECTS</h2>
+          </div>
+          <span className="projects-group-count">0{personalProjects.length} / ARCHIVE</span>
+        </div>
+        <div className="projects-grid">
+          {personalProjects.map((project, i) => (
+            <FolderCard
+              key={project.id}
+              project={project}
+              index={clientProjects.length + i}
+              onSelect={(proj) => {
+                setSelectedProject(proj)
+                window.scrollTo({ top: 0, behavior: 'instant' })
+              }}
+            />
+          ))}
+        </div>
+      </section>
     </div>
   )
 }

@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react'
 import './about-view.css'
 
 const WORD_SETS = [
-  ['Keen.', 'Meticulous.', 'Creative.'],
-  ['Kayeen.', 'Melecio.', 'Campana.'],
+  ['Keen', 'Meticulous', 'Creative'],
+  ['Kayeen', 'Melecio', 'Campaña'],
 ]
 
 function useRotatingHeadline() {
@@ -86,7 +86,7 @@ export default function AboutView({ onNavigate }) {
             </figure>
             <div className="about-hero-copy">
               <p className="about-label">What I Am / Who I Am / What I Do</p>
-              <h1 id="about-title" className="about-headline" aria-label="Keen. Meticulous. Creative. Kayeen Melecio Campana.">
+              <h1 id="about-title" className="about-headline" aria-label="Keen, Meticulous, Creative. Kayeen Melecio Campaña.">
                 <span aria-hidden="true">{headlineWords[0] || '\u00A0'}</span>
                 <span aria-hidden="true">{headlineWords[1] || '\u00A0'}</span>
                 <span className="about-accent" aria-hidden="true">{headlineWords[2] || '\u00A0'}</span>

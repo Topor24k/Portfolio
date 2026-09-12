@@ -19,41 +19,38 @@ function useRotatingHeadline() {
         setPhase('DELETING')
       }, 10000)
     } else if (phase === 'DELETING') {
-      timer = setTimeout(() => {
-        setDisplayedWords((prev) => {
-          const anyHasLength = prev.some((w) => w.length > 0)
-          if (!anyHasLength) {
-            setSetIndex((curr) => (curr + 1) % WORD_SETS.length)
-            setPhase('TYPING')
-            return ['', '', '']
-          }
-          return prev.map((w) => (w.length > 0 ? w.slice(0, -1) : ''))
-        })
-      }, 45)
+      const anyHasLength = displayedWords.some((w) => w.length > 0)
+      if (!anyHasLength) {
+        setSetIndex((curr) => (curr + 1) % WORD_SETS.length)
+        setPhase('TYPING')
+      } else {
+        timer = setTimeout(() => {
+          setDisplayedWords((prev) => prev.map((w) => (w.length > 0 ? w.slice(0, -1) : '')))
+        }, 45)
+      }
     } else if (phase === 'TYPING') {
       const targetWords = WORD_SETS[setIndex]
-      timer = setTimeout(() => {
-        setDisplayedWords((prev) => {
-          let allDone = true
-          const next = prev.map((currentWord, i) => {
-            const target = targetWords[i]
-            if (currentWord.length < target.length) {
-              allDone = false
-              return target.slice(0, currentWord.length + 1)
-            }
-            return currentWord
-          })
+      const allDone = displayedWords.every((w, i) => w === targetWords[i])
 
-          if (allDone) {
-            setPhase('HOLD')
-          }
-          return next
-        })
-      }, 75)
+      if (allDone) {
+        setPhase('HOLD')
+      } else {
+        timer = setTimeout(() => {
+          setDisplayedWords((prev) =>
+            prev.map((w, i) => {
+              const target = targetWords[i]
+              if (w.length < target.length) {
+                return target.slice(0, w.length + 1)
+              }
+              return w
+            })
+          )
+        }, 75)
+      }
     }
 
     return () => clearTimeout(timer)
-  }, [phase, setIndex])
+  }, [phase, displayedWords, setIndex])
 
   return displayedWords
 }

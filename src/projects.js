@@ -94,9 +94,13 @@ export const projects = [
     },
     disciplines: ['TypeScript', 'Web design', 'Marketing'],
     cover: '/Project%20Images/JLD.png',
-    alt: 'JLD Marketing website design',
+    gallery: [
+      '/Project%20Images/JLD.png',
+      '/JLD%20Project%20Pictures/Screenshot%202026-09-12%20202923.png',
+    ],
     images: [
       { src: '/Project%20Images/JLD.png', alt: 'JLD Marketing website homepage', caption: '01 / Homepage' },
+      { src: '/JLD%20Project%20Pictures/Screenshot%202026-09-12%20202923.png', alt: 'JLD Marketing workspace details', caption: '02 / Details' },
     ],
     link: 'https://jld-two.vercel.app',
     artifacts: [

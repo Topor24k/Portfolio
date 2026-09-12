@@ -3,22 +3,12 @@ import './project-detail-frame.css';
 import { playNavSound, playButtonClickSound } from './soundEffects';
 
 export default function ProjectDetailFrame({ project, onBack, onNavigate }) {
-  const [mainIndex, setMainIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   const handleBack = useCallback(() => {
     playNavSound();
     if (onBack) onBack();
   }, [onBack]);
-
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === 'Escape') {
-        handleBack();
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [handleBack]);
 
   // Generate gallery items
   const galleryItems = useMemo(() => {
@@ -28,37 +18,88 @@ export default function ProjectDetailFrame({ project, onBack, onNavigate }) {
       return project.gallery.map((img, i) => ({
         id: `gallery-${i}`,
         src: typeof img === 'string' ? img : img.src,
-        pos: 'center center',
+        alt: `${project.name} preview ${i + 1}`,
       }));
     }
-    
-    // Default positions for styling variation if the same image is reused
-    const sidePositions = ['left center', 'center center', 'right center'];
-    
-    const items = [
-      { id: 'cover', src: project.cover, pos: 'center center' }
-    ];
-    
+
+    if (project.images && project.images.length > 1) {
+      return project.images.map((img, i) => ({
+        id: `img-${i}`,
+        src: img.src,
+        alt: img.alt || `${project.name} preview ${i + 1}`,
+      }));
+    }
+
+    const items = [{ id: 'cover', src: project.cover, alt: project.alt || project.name }];
     if (project.artifacts) {
-      project.artifacts.slice(0, 3).forEach((artifact, i) => {
-        items.push({
-          id: artifact.id,
-          src: artifact.image || project.cover,
-          pos: sidePositions[i % 3]
-        });
+      project.artifacts.forEach((artifact) => {
+        if (artifact.image && artifact.image !== project.cover) {
+          items.push({ id: artifact.id, src: artifact.image, alt: artifact.title });
+        }
       });
     }
-    
     return items;
   }, [project]);
 
-  if (!project) return null;
+  // Ensure minimum items for 3-card carousel (prev, center, next)
+  const displayItems = useMemo(() => {
+    if (galleryItems.length <= 1) {
+      return galleryItems.map((item, i) => ({ ...item, displayIndex: i, keyId: `single-${i}` }));
+    }
+    if (galleryItems.length === 2) {
+      return [
+        { ...galleryItems[0], displayIndex: 0, keyId: '0-a' },
+        { ...galleryItems[1], displayIndex: 1, keyId: '1-a' },
+        { ...galleryItems[0], displayIndex: 0, keyId: '0-b' },
+        { ...galleryItems[1], displayIndex: 1, keyId: '1-b' },
+      ];
+    }
+    return galleryItems.map((item, i) => ({ ...item, displayIndex: i, keyId: `slide-${i}` }));
+  }, [galleryItems]);
 
-  const currentMainIndex = mainIndex < galleryItems.length ? mainIndex : 0;
-  const mainItem = galleryItems[currentMainIndex] || galleryItems[0];
-  const sideItems = galleryItems
-    .map((item, index) => ({ ...item, originalIndex: index }))
-    .filter((_, index) => index !== currentMainIndex);
+  const total = displayItems.length;
+
+  const handleNext = useCallback(() => {
+    if (total <= 1) return;
+    playButtonClickSound();
+    setCurrentIndex((prev) => (prev + 1) % total);
+  }, [total]);
+
+  const handlePrev = useCallback(() => {
+    if (total <= 1) return;
+    playButtonClickSound();
+    setCurrentIndex((prev) => (prev - 1 + total) % total);
+  }, [total]);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        handleBack();
+      } else if (e.key === 'ArrowRight') {
+        handleNext();
+      } else if (e.key === 'ArrowLeft') {
+        handlePrev();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [handleBack, handleNext, handlePrev]);
+
+  // Determine slide position relative to current center
+  const getSlideState = (index) => {
+    if (total <= 1) return { position: 'center', diff: 0 };
+    let diff = index - currentIndex;
+    while (diff > total / 2) diff -= total;
+    while (diff < -total / 2) diff += total;
+
+    if (diff === 0) return { position: 'center', diff };
+    if (diff === -1) return { position: 'left', diff };
+    if (diff === 1) return { position: 'right', diff };
+    if (diff < -1) return { position: 'hidden-left', diff };
+    return { position: 'hidden-right', diff };
+  };
+
+  if (!project) return null;
 
   return (
     <div className="project-detail-container">
@@ -82,37 +123,61 @@ export default function ProjectDetailFrame({ project, onBack, onNavigate }) {
         </div>
       )}
 
-      {/* Project Showcase Gallery */}
-      <div 
-        className="project-showcase"
-        style={{ '--side-count': sideItems.length }}
-      >
-        <div className="showcase-card main-card">
-          <img 
-            src={mainItem.src} 
-            alt="Main showcase" 
-            className="showcase-img" 
-            style={{ objectPosition: mainItem.pos }}
-          />
+      {/* 3D Looping Carousel */}
+      <div className="project-carousel-container">
+        <div className="carousel-stage">
+          {displayItems.map((item, index) => {
+            const { position } = getSlideState(index);
+            const isLeft = position === 'left';
+            const isRight = position === 'right';
+
+            return (
+              <div
+                key={item.keyId}
+                className={`carousel-slide is-${position}`}
+                onClick={() => {
+                  if (isLeft) handlePrev();
+                  else if (isRight) handleNext();
+                }}
+                role={isLeft || isRight ? 'button' : undefined}
+                tabIndex={isLeft || isRight ? 0 : -1}
+                aria-label={isLeft ? 'Previous slide' : isRight ? 'Next slide' : undefined}
+              >
+                <img
+                  src={item.src}
+                  alt={item.alt || `${project.name} photo`}
+                  className="carousel-img"
+                  draggable={false}
+                />
+              </div>
+            );
+          })}
         </div>
 
-        {sideItems.map((item) => (
-          <div 
-            key={item.id} 
-            className="showcase-card side-card"
-            onClick={() => {
-              playButtonClickSound();
-              setMainIndex(item.originalIndex);
-            }}
-          >
-            <img 
-              src={item.src} 
-              alt="Side showcase" 
-              className="showcase-img" 
-              style={{ objectPosition: item.pos }} 
-            />
+        {/* Carousel Navigation Bar */}
+        {galleryItems.length > 1 && (
+          <div className="carousel-controls">
+            <button
+              type="button"
+              className="carousel-btn prev-btn"
+              onClick={handlePrev}
+              aria-label="Previous image"
+            >
+              ← PREV
+            </button>
+            <span className="carousel-counter">
+              {String((displayItems[currentIndex]?.displayIndex ?? currentIndex) + 1).padStart(2, '0')} / {String(galleryItems.length).padStart(2, '0')}
+            </span>
+            <button
+              type="button"
+              className="carousel-btn next-btn"
+              onClick={handleNext}
+              aria-label="Next image"
+            >
+              NEXT →
+            </button>
           </div>
-        ))}
+        )}
       </div>
     </div>
   );

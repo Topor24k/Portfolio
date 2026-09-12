@@ -1,9 +1,10 @@
-import React, { useEffect, useCallback, useState, useMemo } from 'react';
+import React, { useEffect, useCallback, useState, useMemo, useRef } from 'react';
 import './project-detail-frame.css';
 import { playNavSound, playButtonClickSound } from './soundEffects';
 
 export default function ProjectDetailFrame({ project, onBack, onNavigate }) {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const pointerRef = useRef({ startX: 0, startY: 0, active: false });
 
   const handleBack = useCallback(() => {
     playNavSound();
@@ -71,6 +72,33 @@ export default function ProjectDetailFrame({ project, onBack, onNavigate }) {
     setCurrentIndex((prev) => (prev - 1 + total) % total);
   }, [total]);
 
+  // Swipe gesture handling for touch and pointer events
+  const handlePointerDown = (e) => {
+    if (e.button && e.button !== 0) return;
+    pointerRef.current = { startX: e.clientX, startY: e.clientY, active: true };
+  };
+
+  const handlePointerUp = (e) => {
+    if (!pointerRef.current.active) return;
+    pointerRef.current.active = false;
+
+    const deltaX = e.clientX - pointerRef.current.startX;
+    const deltaY = e.clientY - pointerRef.current.startY;
+
+    // Minimum horizontal swipe distance of 40px and dominant horizontal movement
+    if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 40) {
+      if (deltaX < 0) {
+        handleNext();
+      } else {
+        handlePrev();
+      }
+    }
+  };
+
+  const handlePointerCancel = () => {
+    pointerRef.current.active = false;
+  };
+
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') {
@@ -123,9 +151,14 @@ export default function ProjectDetailFrame({ project, onBack, onNavigate }) {
         </div>
       )}
 
-      {/* 3D Looping Carousel */}
+      {/* 3D Looping Carousel with Swipe Support */}
       <div className="project-carousel-container">
-        <div className="carousel-stage">
+        <div 
+          className="carousel-stage"
+          onPointerDown={handlePointerDown}
+          onPointerUp={handlePointerUp}
+          onPointerCancel={handlePointerCancel}
+        >
           {displayItems.map((item, index) => {
             const { position } = getSlideState(index);
             const isLeft = position === 'left';
@@ -135,9 +168,14 @@ export default function ProjectDetailFrame({ project, onBack, onNavigate }) {
               <div
                 key={item.keyId}
                 className={`carousel-slide is-${position}`}
-                onClick={() => {
-                  if (isLeft) handlePrev();
-                  else if (isRight) handleNext();
+                onClick={(e) => {
+                  if (isLeft) {
+                    e.stopPropagation();
+                    handlePrev();
+                  } else if (isRight) {
+                    e.stopPropagation();
+                    handleNext();
+                  }
                 }}
                 role={isLeft || isRight ? 'button' : undefined}
                 tabIndex={isLeft || isRight ? 0 : -1}
@@ -159,7 +197,10 @@ export default function ProjectDetailFrame({ project, onBack, onNavigate }) {
               <button
                 type="button"
                 className="carousel-side-btn prev-side-btn"
-                onClick={handlePrev}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handlePrev();
+                }}
                 aria-label="Previous image"
               >
                 <span className="btn-arrow">←</span>
@@ -168,7 +209,10 @@ export default function ProjectDetailFrame({ project, onBack, onNavigate }) {
               <button
                 type="button"
                 className="carousel-side-btn next-side-btn"
-                onClick={handleNext}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleNext();
+                }}
                 aria-label="Next image"
               >
                 <span className="btn-text">NEXT</span>

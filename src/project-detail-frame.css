@@ -83,6 +83,12 @@
   justify-content: center;
   overflow: hidden;
   border-radius: 16px;
+  touch-action: pan-y;
+  cursor: grab;
+}
+
+.carousel-stage:active {
+  cursor: grabbing;
 }
 
 .carousel-slide {

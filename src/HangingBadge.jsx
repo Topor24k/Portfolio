@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import './hanging-badge.css'
+import { playIdLaceSound, playIdSwitchSound } from './soundEffects'
 
 export default function HangingBadge({ isOpen, onClose, onOpenProjects }) {
   const [flipped, setFlipped] = useState(false)
@@ -33,6 +34,8 @@ export default function HangingBadge({ isOpen, onClose, onOpenProjects }) {
       setExpandRect(null)
       gesture.current = null
       finishing.current = false
+    } else {
+      playIdLaceSound()
     }
   }, [isOpen, expanding])
 
@@ -93,6 +96,7 @@ export default function HangingBadge({ isOpen, onClose, onOpenProjects }) {
     gesture.current = null
     setDragging(false)
     setClosing(true)
+    playIdLaceSound()
   }
 
   useEffect(() => {
@@ -153,6 +157,7 @@ export default function HangingBadge({ isOpen, onClose, onOpenProjects }) {
       skipClick.current = false
       return
     }
+    playIdSwitchSound()
     setFlipped((value) => !value)
   }
 

@@ -1,4 +1,5 @@
-﻿import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { playGlitchSound } from './soundEffects'
 
 const ROLES = [
   'CREATIVE DEVELOPER',
@@ -32,6 +33,7 @@ export default function GlitchRole() {
 
   const triggerGlitch = (fromText, toText) => {
     setIsGlitching(true)
+    playGlitchSound()
     const startTime = performance.now()
     const duration = 480 // Cyberpunk scramble & slice duration (480ms)
 

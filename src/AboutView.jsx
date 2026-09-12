@@ -4,6 +4,7 @@ const interests = [
   ['Writing', 'Structuring thoughts, organizing internal narratives, and practicing clear communication.'],
   ['Gaming', 'Immersive world-building, reflex training, and unraveling complex game mechanics.'],
   ['Eating', 'Savoring local gastronomy, comforting rituals, and discovering new flavors with friends.'],
+  ['Board Games', 'Exploring strategy, solving challenges, and sharing a little friendly competition around the table.'],
 ]
 
 export default function AboutView({ onNavigate }) {
@@ -12,6 +13,17 @@ export default function AboutView({ onNavigate }) {
       <div className="about-container">
         <section className="about-cover" aria-labelledby="about-title">
           <div className="about-hero-grid">
+            <figure className="about-portrait">
+              <img
+                src="/About%20Me%20Images/Kayeen%201.jpg"
+                alt="Kayeen M. Campaña in a black jacket and tie, looking toward the right"
+                width="1080"
+                height="1080"
+                draggable="false"
+                fetchPriority="high"
+              />
+              <figcaption className="about-sr-only">Fig. 01 / Portrait & stance</figcaption>
+            </figure>
             <div className="about-hero-copy">
               <p className="about-label">Identity & creed</p>
               <h1 id="about-title" className="about-headline">
@@ -24,17 +36,6 @@ export default function AboutView({ onNavigate }) {
                 Front-end design & development
               </p>
             </div>
-            <figure className="about-portrait">
-              <img
-                src="/About%20Me%20Images/My%20Education%20Side%20Photo.png"
-                alt="Kayeen M. Campaña smiling in a dark jacket and blue shirt"
-                width="1161"
-                height="2413"
-                draggable="false"
-                fetchPriority="high"
-              />
-              <figcaption className="about-sr-only">Fig. 01 / Portrait & stance</figcaption>
-            </figure>
           </div>
 
           <div className="about-cover-caption">
@@ -149,7 +150,7 @@ export default function AboutView({ onNavigate }) {
             />
             <figcaption>
               <span>Fig. 03 / Downtime & warmth</span>
-              <span>Writing · Gaming · Eating</span>
+              <span>{interests.map(([title]) => title).join(' · ')}</span>
             </figcaption>
           </figure>
         </section>

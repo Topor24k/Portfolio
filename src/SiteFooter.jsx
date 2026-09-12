@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import './site-footer.css'
+import { playGlitchSound } from './soundEffects'
 
 const GLYPHS = '!/<>-_\\*~01XZ?#&§@[]{}—=+*^'
 const FOOTER_TEXTS = [
@@ -31,6 +32,7 @@ export default function SiteFooter() {
 
   const triggerGlitch = (fromText, toText) => {
     setIsGlitching(true)
+    playGlitchSound()
     const startTime = performance.now()
     const duration = 480 
 

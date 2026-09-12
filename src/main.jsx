@@ -8,10 +8,11 @@ import NavigationMenu from './NavigationMenu'
 import GlitchRole from './GlitchRole'
 import PageWipe from './PageWipe'
 import SiteFooter from './SiteFooter'
+import { setSoundMuted } from './soundEffects'
 
 function App() {
   const [isLight, setIsLight] = useState(false)
-  const [musicOn, setMusicOn] = useState(false)
+  const [soundOn, setSoundOn] = useState(true)
   const [isCardOpen, setIsCardOpen] = useState(false)
   const [currentView, setCurrentView] = useState('home') // 'home' | 'projects' | 'about' | 'contact'
   const [isPageTransitioning, setIsPageTransitioning] = useState(false)
@@ -88,8 +89,16 @@ function App() {
     <main className={`portfolio-shell ${isLight ? 'light' : 'dark'}`}>
       <PageWipe active={isPageTransitioning} label={transitionLabel} />
       <header className={`site-header${isScrolled ? ' is-scrolled' : ''}`}>
-        <button className="utility-button" type="button" onClick={() => setMusicOn(!musicOn)}>
-          MUSIC: {musicOn ? 'ON' : 'OFF'}
+        <button
+          className="utility-button"
+          type="button"
+          onClick={() => {
+            const next = !soundOn
+            setSoundOn(next)
+            setSoundMuted(!next)
+          }}
+        >
+          SOUND: {soundOn ? 'ON' : 'OFF'}
         </button>
 
         <NavigationMenu currentView={currentView} onNavigate={handleNavigate} />

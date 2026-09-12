@@ -1,13 +1,5 @@
 import './about-view.css'
 
-const facts = [
-  ['Full name', 'Kayeen M. Campaña'],
-  ['Origin', 'Getafe, Bohol'],
-  ['Current base', 'Davao City, PH'],
-  ['Discipline', 'B.S. Computer Science'],
-  ['Specialization', 'Front-end UI / interaction'],
-]
-
 const interests = [
   ['Writing', 'Structuring thoughts, organizing internal narratives, and practicing clear communication.'],
   ['Gaming', 'Immersive world-building, reflex training, and unraveling complex game mechanics.'],
@@ -19,12 +11,6 @@ export default function AboutView({ onNavigate }) {
     <article className="about-view" aria-label="About Kayeen M. Campaña">
       <div className="about-container">
         <section className="about-cover" aria-labelledby="about-title">
-          <div className="about-topline">
-            <span className="about-label">About me / Profile 01</span>
-            <span>Davao City, Philippines</span>
-            <span>8°04'N 125°36'E</span>
-          </div>
-
           <div className="about-hero-grid">
             <div className="about-hero-copy">
               <p className="about-label">Identity & creed</p>
@@ -56,15 +42,6 @@ export default function AboutView({ onNavigate }) {
             <span>Getafe, Bohol <span aria-hidden="true">→</span> Davao <span className="about-caption-separator">/</span> Age 21</span>
           </div>
         </section>
-
-        <dl className="about-facts" aria-label="Quick facts">
-          {facts.map(([label, value]) => (
-            <div key={label}>
-              <dt>{label}</dt>
-              <dd>{value}</dd>
-            </div>
-          ))}
-        </dl>
 
         <section className="about-foundation about-section" aria-labelledby="about-foundation-title">
           <header>
@@ -160,7 +137,7 @@ export default function AboutView({ onNavigate }) {
               ))}
             </ol>
           </div>
-          <figure className="about-photo-story about-photo-story--downtime">
+          <figure className="about-photo-story">
             <img
               src="/About%20Me%20Images/Thank%20You%20Side%20Photo.png"
               alt="Kayeen smiling and making a peace sign, with coffee and a ThinkPad"

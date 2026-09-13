@@ -5,7 +5,7 @@ import FolderCard from './FolderCard'
 import ProjectDetailFrame from './ProjectDetailFrame'
 import ProjectInquiry from './ProjectInquiry'
 
-export default function ProjectsView({ view = 'projects', onNavigate, setIsProjectDetailOpen }) {
+export default function ProjectsView({ onNavigate, setIsProjectDetailOpen }) {
   const [selectedProject, setSelectedProject] = useState(() => {
     if (typeof window !== 'undefined') {
       const hash = window.location.hash.replace(/^#\/?/, '').trim()
@@ -67,32 +67,6 @@ export default function ProjectsView({ view = 'projects', onNavigate, setIsProje
       localStorage.removeItem('kc_portfolio_project')
     } catch (e) {}
     window.scrollTo({ top: 0, behavior: 'instant' })
-  }
-
-  const titles = {
-    about: {
-      eyebrow: 'ABOUT ME',
-      title: 'COMING SOON',
-    },
-    contact: {
-      eyebrow: 'CONTACT',
-      title: 'COMING SOON',
-    },
-  }
-
-  // About and Contact stay as "coming soon" placeholders
-  if (view !== 'projects') {
-    const current = titles[view] || titles.about
-    return (
-      <div className="projects-view">
-        <section className="coming-soon-container">
-          <div className="coming-soon-content">
-            <p className="coming-soon-eyebrow">{current.eyebrow}</p>
-            <h1 className="coming-soon-title">{current.title}</h1>
-          </div>
-        </section>
-      </div>
-    )
   }
 
   // If a specific project is selected, display it in the dedicated archival frame

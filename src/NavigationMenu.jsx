@@ -13,6 +13,7 @@ export default function NavigationMenu({ currentView, onNavigate }) {
           key={view.id}
           type="button"
           className={`nav-link${currentView === view.id ? ' is-active' : ''}`}
+          aria-current={currentView === view.id ? 'page' : undefined}
           onClick={() => onNavigate(view.id)}
         >
           {view.label}

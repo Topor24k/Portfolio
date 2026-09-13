@@ -227,6 +227,27 @@
   height: 100%;
 }
 
+.inquiry-fields {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.7rem, 3vw, 2.8rem);
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.inquiry-honeypot { display: none; }
+.inquiry-feedback:empty { display: none; }
+.inquiry-feedback { font-size: .78rem; line-height: 1.7; overflow-wrap: anywhere; }
+.inquiry-feedback p { margin: 0; }
+.inquiry-feedback a { display: inline-block; margin-top: .65rem; color: var(--inquiry-ink); text-underline-offset: .25em; }
+.inquiry-feedback[data-status='error'], .inquiry-feedback[data-status='activation'] { padding-left: 1rem; border-left: 2px solid #f04b42; }
+.inquiry-privacy { margin: 0; color: var(--inquiry-muted); font-size: .62rem; line-height: 1.75; }
+.inquiry-privacy a { color: inherit; text-underline-offset: .2em; }
+.inquiry-fields:disabled { opacity: .7; }
+.inquiry-fields:disabled button { cursor: default; }
+
 .project-inquiry-row {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -340,46 +361,6 @@
   .project-inquiry-submit:hover span { transform: translate(2px, -2px); }
 }
 
-/* ── Coming soon placeholders (about / contact) ─────────── */
-
-.coming-soon-container {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 40px 20px;
-}
-
-.coming-soon-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.coming-soon-eyebrow {
-  margin: 0 0 16px;
-  color: #b58348;
-  font-size: clamp(12px, 1.2vw, 15px);
-  font-weight: 500;
-  letter-spacing: .35em;
-  text-transform: uppercase;
-}
-
-.dark .coming-soon-eyebrow {
-  color: #d6a77a;
-}
-
-.coming-soon-title {
-  margin: 0;
-  font-family: 'Oswald', Impact, sans-serif;
-  font-size: clamp(4rem, 12vw, 10.5rem);
-  font-weight: 700;
-  letter-spacing: -.03em;
-  line-height: .9;
-  text-transform: uppercase;
-}
-
 /* ── Responsive ─────────────────────────────────────────── */
 
 @media (max-width: 900px) {
@@ -414,8 +395,6 @@
 
 @media (max-width: 640px) {
   .projects-view { padding: 20px 4vw 40px; }
-  .coming-soon-eyebrow { letter-spacing: .25em; font-size: 11px; }
-  .coming-soon-title { font-size: clamp(3rem, 15vw, 5.5rem); }
 
   .projects-view--grid {
     padding: 110px 5vw 40px;
@@ -451,7 +430,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   .project-field input,
-  .project-field select,
   .project-field textarea,
   .project-inquiry-submit,
   .project-inquiry-submit span {

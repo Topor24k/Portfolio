@@ -4,6 +4,7 @@ import './styles.css'
 import HangingBadge from './HangingBadge'
 import ProjectsView from './ProjectsView'
 import AboutView from './AboutView'
+import ContactView from './ContactView'
 import NavigationMenu from './NavigationMenu'
 import GlitchRole from './GlitchRole'
 import PageWipe from './PageWipe'
@@ -255,8 +256,10 @@ function App() {
 
       {currentView === 'about' ? (
         <AboutView onNavigate={handleNavigate} />
+      ) : currentView === 'contact' ? (
+        <ContactView onNavigate={handleNavigate} />
       ) : currentView !== 'home' ? (
-        <ProjectsView view={currentView} onNavigate={handleNavigate} setIsProjectDetailOpen={setIsProjectDetailOpen} />
+        <ProjectsView onNavigate={handleNavigate} setIsProjectDetailOpen={setIsProjectDetailOpen} />
       ) : (
         <section className="hero" id="top" aria-labelledby="hero-title">
           <div className="hero-title-wrapper">

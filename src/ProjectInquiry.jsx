@@ -1,17 +1,18 @@
+import { useState } from 'react'
+import { BusinessFields, ContactFields, InquiryConsent, InquiryFeedback, InquiryPrivacy } from './InquiryFields'
+import useInquirySubmission from './useInquirySubmission'
+
 export default function ProjectInquiry() {
+  const { status, submit } = useInquirySubmission()
+  const [submittedValues, setSubmittedValues] = useState({})
   const handleSubmit = (event) => {
     event.preventDefault()
-    const data = new FormData(event.currentTarget)
-    const name = data.get('name')?.toString().trim() || 'Prospective client'
-    const email = data.get('email')?.toString().trim() || 'Not provided'
-    const business = data.get('business')?.toString().trim() || 'Not provided'
-    const message = data.get('message')?.toString().trim() || 'I would like to build a website for my business.'
-    const subject = encodeURIComponent(`Website inquiry — ${business}`)
-    const body = encodeURIComponent(
-      `Hello Kayeen,\n\nI’d like to build my first website with you and your team.\n\nAbout my business:\n${message}\n\nBusiness name: ${business}\nContact name: ${name}\nEmail: ${email}`,
-    )
-
-    window.location.href = `mailto:kayeencampana@gmail.com?subject=${subject}&body=${body}`
+    const form = event.currentTarget
+    const values = Object.fromEntries(new FormData(form))
+    form.elements.message.setCustomValidity(values.message.trim().length < 10 ? 'Tell me a little more about your business (at least 10 characters).' : '')
+    if (!form.reportValidity()) return
+    setSubmittedValues(values)
+    submit(values)
   }
 
   return (
@@ -28,37 +29,22 @@ export default function ProjectInquiry() {
         </div>
       </div>
 
-      <form className="project-inquiry-form" onSubmit={handleSubmit}>
-        <div className="project-inquiry-row">
-          <label className="project-field">
-            <span>Your name</span>
-            <input name="name" type="text" autoComplete="name" required />
-          </label>
-          <label className="project-field">
-            <span>Email address</span>
-            <input name="email" type="email" autoComplete="email" required />
-          </label>
+      <form className="project-inquiry-form" onSubmit={handleSubmit} noValidate aria-busy={status === 'sending'} onInput={({ target }) => target.setCustomValidity?.('')}>
+        <div className="inquiry-honeypot" aria-hidden="true">
+          <label>Leave this field empty<input name="_honey" type="text" autoComplete="off" tabIndex={-1} /></label>
         </div>
-
-        <label className="project-field">
-          <span>What is the name of your business?</span>
-          <input name="business" type="text" autoComplete="organization" required />
-        </label>
-
-        <label className="project-field project-field--message">
-          <span>Tell me about your business</span>
-          <textarea name="message" rows="4" required />
-        </label>
-
-        <div className="project-inquiry-footer">
-          <label className="project-consent">
-            <input name="consent" type="checkbox" required />
-            <span>I agree to be contacted about my website.</span>
-          </label>
-          <button className="project-inquiry-submit" type="submit">
-            Build my website <span aria-hidden="true">↗</span>
-          </button>
-        </div>
+        <fieldset className="inquiry-fields" disabled={status === 'sending' || status === 'success'}>
+          <ContactFields />
+          <BusinessFields />
+          <div className="project-inquiry-footer">
+            <InquiryConsent />
+            <button className="project-inquiry-submit" type="submit">
+              {status === 'sending' ? 'Sending…' : status === 'success' ? 'Inquiry submitted' : 'Build my website'} <span aria-hidden="true">↗</span>
+            </button>
+          </div>
+        </fieldset>
+        <InquiryFeedback status={status} values={submittedValues} />
+        <InquiryPrivacy />
       </form>
     </section>
   )

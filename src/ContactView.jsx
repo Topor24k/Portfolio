@@ -8,7 +8,7 @@ import './contact-view.css'
 const STEPS = ['Your business', 'Your website', 'Your details']
 const GOALS = ['Introduce my business', 'Get more inquiries', 'Take bookings', 'Sell products', 'Showcase my work', 'Help me decide']
 const TIMELINES = ['As soon as possible', 'In 1–3 months', 'Flexible / let’s discuss']
-const INITIAL_BRIEF = { business: '', message: '', name: '', email: '', goals: [], timeline: TIMELINES[2], consent: false, _honey: '' }
+const INITIAL_BRIEF = { business: '', message: '', name: '', email: '', goals: [], customGoal: '', timeline: TIMELINES[2], consent: false, _honey: '' }
 
 const GLYPHS = '!/<>-_\\*~01XZ?#&§@[]{}—=+*^'
 const GLITCH_WORDS = ['BUSINESS', 'BRAND', 'VISION', 'PRESENCE']
@@ -255,6 +255,19 @@ export default function ContactView({ onNavigate }) {
                       <span className="contact-choice-label">{goal}<span className="contact-choice-mark" aria-hidden="true">{brief.goals.includes(goal) ? '✓' : '+'}</span></span>
                     </label>)}
                   </div>
+                  <div className="contact-custom-goal">
+                    <label className="project-field">
+                      <span>Other goal (if not listed above)</span>
+                      <input
+                        name="customGoal"
+                        type="text"
+                        maxLength={120}
+                        placeholder="e.g. Member portal, podcast showcase, newsletter…"
+                        value={brief.customGoal || ''}
+                        onChange={updateField}
+                      />
+                    </label>
+                  </div>
                 </fieldset>
                 <fieldset className="contact-options">
                   <legend>When would you like to launch?</legend>
@@ -271,7 +284,7 @@ export default function ContactView({ onNavigate }) {
                   <div className="contact-review-top"><span>Your brief</span><button type="button" onClick={() => setStep(0)}>Edit ↗</button></div>
                   <h3>{brief.business}</h3>
                   <p className="contact-review-message">{brief.message}</p>
-                  <dl><div><dt>Website goals</dt><dd>{brief.goals.join(' · ') || 'Let’s decide together'}</dd></div><div><dt>Timeline</dt><dd>{brief.timeline}</dd></div></dl>
+                  <dl><div><dt>Website goals</dt><dd>{[...brief.goals, brief.customGoal?.trim()].filter(Boolean).join(' · ') || 'Let’s decide together'}</dd></div><div><dt>Timeline</dt><dd>{brief.timeline}</dd></div></dl>
                 </div>
                 <ContactFields values={brief} onChange={updateField} />
                 <InquiryConsent checked={brief.consent} onChange={updateField} />

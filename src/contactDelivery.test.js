@@ -24,6 +24,18 @@ test('short form without optional goals still produces a complete notification',
   assert.equal(payload.preferred_timeline, 'Flexible / let’s discuss')
 })
 
+test('custom website goal is included in payload and mailto link', () => {
+  const withCustom = { ...brief, customGoal: 'Podcast showcase' }
+  const payload = createInquiryPayload(withCustom)
+  assert.equal(payload.website_goals, 'Take bookings, Get more inquiries, Other: Podcast showcase')
+
+  const url = new URL(inquiryEmailLink(withCustom))
+  assert.match(url.searchParams.get('body'), /Other: Podcast showcase/)
+
+  const customOnly = createInquiryPayload({ ...brief, goals: [], customGoal: 'Membership portal' })
+  assert.equal(customOnly.website_goals, 'Other: Membership portal')
+})
+
 test('fallback email safely encodes the brief and retains all selected goals', () => {
   const url = new URL(inquiryEmailLink(brief))
   assert.equal(url.pathname, CONTACT_EMAIL)

@@ -272,6 +272,9 @@
 .contact-choice input:checked + .contact-choice-label { border-color: #f04b42; background: rgba(240, 75, 66, .075); }
 .contact-choice-mark { color: #f04b42; }
 .contact-choice input:focus-visible + .contact-choice-label { outline: 2px solid #f04b42; outline-offset: 3px; }
+.contact-custom-goal { margin-top: 1.25rem; }
+.contact-custom-goal .project-field span { font-size: .73rem; }
+.contact-custom-goal input::placeholder { color: var(--inquiry-muted); opacity: .6; font-size: .88rem; }
 .contact-timelines { display: flex; flex-wrap: wrap; gap: .55rem; }
 .contact-timelines .contact-choice-label { min-height: 2.8rem; font-size: .65rem; padding: .7rem .8rem; }
 .contact-review { padding: 1.2rem; background: var(--contact-subtle); border-left: 2px solid #f04b42; }

@@ -2,12 +2,18 @@ export const CONTACT_EMAIL = 'kayeencampana@gmail.com'
 const CONTACT_ENDPOINT = `https://formsubmit.co/ajax/${CONTACT_EMAIL}`
 
 export function createInquiryPayload(values) {
+  const custom = values.customGoal?.trim()
+  const combinedGoals = [
+    ...(values.goals || []),
+    custom ? `Other: ${custom}` : '',
+  ].filter(Boolean)
+
   return {
     name: values.name.trim(),
     email: values.email.trim(),
     business: values.business.trim(),
     message: values.message.trim(),
-    website_goals: values.goals?.join(', ') || 'To discuss together',
+    website_goals: combinedGoals.join(', ') || 'To discuss together',
     preferred_timeline: values.timeline || 'Flexible / let’s discuss',
     consent: 'Agreed to be contacted about this website inquiry',
     _subject: `New website inquiry — ${values.business.trim()}`,
@@ -18,12 +24,18 @@ export function createInquiryPayload(values) {
 
 export function inquiryEmailLink(values = {}) {
   const subject = `Website inquiry${values.business ? ` — ${values.business}` : ''}`
+  const custom = values.customGoal?.trim()
+  const combinedGoals = [
+    ...(values.goals || []),
+    custom ? `Other: ${custom}` : '',
+  ].filter(Boolean)
+
   const body = [
     'Hello Kayeen,',
     'I’d like to build a website with you and your team.',
     values.business && `Business: ${values.business}`,
     values.message && `About my business:\n${values.message}`,
-    values.goals?.length && `Website goals: ${values.goals.join(', ')}`,
+    combinedGoals.length ? `Website goals: ${combinedGoals.join(', ')}` : '',
     values.timeline && `Preferred timeline: ${values.timeline}`,
     values.name && `Name: ${values.name}`,
     values.email && `Email: ${values.email}`,

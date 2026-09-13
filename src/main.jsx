@@ -9,7 +9,7 @@ import NavigationMenu from './NavigationMenu'
 import GlitchRole from './GlitchRole'
 import PageWipe from './PageWipe'
 import SiteFooter from './SiteFooter'
-import { setSoundMuted, playNavSound, playButtonClickSound } from './soundEffects'
+import { setSoundMuted, playNavSound, playIdLaceSound, playButtonClickSound, setActiveView, stopGlitchSound } from './soundEffects'
 
 const VALID_VIEWS = ['home', 'projects', 'about', 'contact']
 
@@ -75,7 +75,9 @@ function App() {
     return Boolean(getInitialNavigation().projectId)
   })
   const [currentView, setCurrentView] = useState(() => {
-    return getInitialNavigation().view
+    const init = getInitialNavigation().view
+    setActiveView(init)
+    return init
   })
   const [isPageTransitioning, setIsPageTransitioning] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
@@ -98,8 +100,14 @@ function App() {
   }, [])
 
   useEffect(() => {
+    setActiveView(currentView)
+  }, [currentView])
+
+  useEffect(() => {
     const handleHashChange = () => {
       const parsed = parseHash(window.location.hash) || { view: 'home', projectId: null }
+      stopGlitchSound()
+      setActiveView(parsed.view)
       setCurrentView((prev) => (prev !== parsed.view ? parsed.view : prev))
       setIsProjectDetailOpen(Boolean(parsed.projectId))
       try {
@@ -126,20 +134,25 @@ function App() {
 
     updateScrollState()
     window.addEventListener('scroll', updateScrollState, { passive: true })
-
     return () => window.removeEventListener('scroll', updateScrollState)
   }, [])
 
   useEffect(() => {
     const handleGlobalClick = (event) => {
-      const button = event.target.closest('button, [role="button"]')
+      const target = event.target
+      if (!target) return
+      const button = target.closest('button, [role="button"], input[type="submit"], input[type="button"], .contact-choice, .project-consent')
       if (!button) return
+      if (button.disabled || button.getAttribute('aria-disabled') === 'true') return
       // If clicking the badge card to flip, the switch sound is handled in HangingBadge
-      if (button.closest('.badge-holder')) return
+      if (button.closest('.badge-holder') && !button.closest('.badge-projects-btn')) return
       // If clicking a nav link, handleNavigate handles the nav sound
       if (button.classList.contains('nav-link')) return
+      // If clicking hero name lockup, it drops the badge with the lace sound
+      if (button.classList.contains('hero-name-lockup')) return
       // If clicking the sound toggle button, it handles its own click sound explicitly
       if (button.classList.contains('sound-toggle-btn')) return
+
       playButtonClickSound()
     }
     window.addEventListener('click', handleGlobalClick, { capture: true })
@@ -148,6 +161,8 @@ function App() {
 
   const openBusinessCard = () => {
     if (isCardOpen || currentView !== 'home' || Date.now() < reopenAfter.current) return
+    stopGlitchSound()
+    playIdLaceSound()
     setIsCardOpen(true)
   }
 
@@ -157,6 +172,8 @@ function App() {
   }
 
   const handleOpenProjects = () => {
+    stopGlitchSound()
+    setActiveView('projects')
     setCurrentView('projects')
     setIsProjectDetailOpen(false)
     window.location.hash = 'projects'
@@ -170,6 +187,8 @@ function App() {
   }
 
   const handleBackToHome = () => {
+    stopGlitchSound()
+    setActiveView('home')
     setCurrentView('home')
     setIsProjectDetailOpen(false)
     window.history.replaceState(null, '', window.location.pathname + window.location.search)
@@ -186,6 +205,8 @@ function App() {
   const handleNavigate = (destination) => {
     if (destination === currentView || isPageTransitioning) return
 
+    stopGlitchSound()
+    setActiveView('transitioning')
     playNavSound()
     transitionTimers.current.forEach((timer) => window.clearTimeout(timer))
     setTransitionLabel(viewLabels[destination] || 'HOME')
@@ -194,6 +215,7 @@ function App() {
 
     const swapTimer = window.setTimeout(() => {
       setCurrentView(destination)
+      setActiveView(destination)
       setIsProjectDetailOpen(false)
       reopenAfter.current = Date.now() + 800
       window.scrollTo({ top: 0, behavior: 'instant' })
@@ -230,15 +252,9 @@ function App() {
             type="button"
             onClick={() => {
               const next = !soundOn
-              if (next) {
-                setSoundMuted(false)
-                setSoundOn(true)
-                playButtonClickSound()
-              } else {
-                playButtonClickSound()
-                setSoundMuted(true)
-                setSoundOn(false)
-              }
+              setSoundOn(next)
+              setSoundMuted(!next)
+              playButtonClickSound(true)
             }}
           >
             SOUND: {soundOn ? 'ON' : 'OFF'}
@@ -285,7 +301,9 @@ function App() {
         </section>
       )}
 
-      <SiteFooter currentView={currentView} onNavigate={handleNavigate} />
+      {currentView !== 'home' && (
+        <SiteFooter currentView={currentView} onNavigate={handleNavigate} />
+      )}
 
       <HangingBadge
         isOpen={isCardOpen}

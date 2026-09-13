@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
+import { playFooterGlitchSound, stopGlitchSound } from './soundEffects'
 import './site-footer.css'
-import { playGlitchSound } from './soundEffects'
 
 const GLYPHS = '!/<>-_\\*~01XZ?#&§@[]{}—=+*^'
 const FOOTER_TEXTS = [
@@ -9,53 +9,71 @@ const FOOTER_TEXTS = [
   'OPEN A CONVERSATION'
 ]
 
-export default function SiteFooter() {
+export default function SiteFooter({ currentView = 'home' }) {
   const [textIndex, setTextIndex] = useState(0)
   const [displayText, setDisplayText] = useState(FOOTER_TEXTS[0])
   const [isGlitching, setIsGlitching] = useState(false)
+  const textIndexRef = useRef(0)
   const animFrameRef = useRef(null)
-  const footerRef = useRef(null)
-  const isVisibleRef = useRef(false)
+  const wordmarkRef = useRef(null)
+  const isFullFrameRef = useRef(false)
 
   useEffect(() => {
     if (!('IntersectionObserver' in window)) {
-      isVisibleRef.current = true
+      isFullFrameRef.current = false
       return
     }
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        isVisibleRef.current = Boolean(entry && entry.isIntersecting)
+        if (!entry) {
+          isFullFrameRef.current = false
+          return
+        }
+        // Strict full frame: the wordmark itself must be at least 85% visible in the viewport
+        const isFull = Boolean(entry.isIntersecting && entry.intersectionRatio >= 0.85)
+        isFullFrameRef.current = isFull
+        if (!isFull) {
+          stopGlitchSound()
+        }
       },
-      { threshold: 0.1 }
+      { threshold: [0, 0.5, 0.85, 1.0] }
     )
 
-    if (footerRef.current) {
-      observer.observe(footerRef.current)
+    if (wordmarkRef.current) {
+      observer.observe(wordmarkRef.current)
     }
 
-    return () => observer.disconnect()
+    return () => {
+      observer.disconnect()
+      stopGlitchSound()
+    }
   }, [])
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setTextIndex((prevIndex) => {
-        const nextIndex = (prevIndex + 1) % FOOTER_TEXTS.length
-        triggerGlitch(FOOTER_TEXTS[prevIndex], FOOTER_TEXTS[nextIndex])
-        return nextIndex
-      })
-    }, 3000)
+      if (!isFullFrameRef.current || document.hidden) return
+      const prev = textIndexRef.current
+      const next = (prev + 1) % FOOTER_TEXTS.length
+      textIndexRef.current = next
+      setTextIndex(next)
+      triggerGlitch(FOOTER_TEXTS[prev], FOOTER_TEXTS[next])
+    }, 4000)
 
     return () => {
       clearInterval(interval)
       if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current)
+      stopGlitchSound()
     }
-  }, [])
+  }, [currentView])
 
   const triggerGlitch = (fromText, toText) => {
+    if (animFrameRef.current) {
+      cancelAnimationFrame(animFrameRef.current)
+    }
     setIsGlitching(true)
-    if (isVisibleRef.current && !document.hidden) {
-      playGlitchSound()
+    if (isFullFrameRef.current) {
+      playFooterGlitchSound(true)
     }
     const startTime = performance.now()
     const duration = 480 
@@ -90,15 +108,17 @@ export default function SiteFooter() {
   }
 
   return (
-    <footer ref={footerRef} className="site-footer" aria-labelledby="footer-wordmark">
+    <footer className="site-footer" aria-labelledby="footer-wordmark">
       <div className="footer-master-container">
         <div className="footer-wordmark-wrap">
           <h2 
-            className={`footer-wordmark${isGlitching ? ' is-glitching' : ''}`} 
+            ref={wordmarkRef}
+            className={`footer-wordmark footer-glitch-wordmark${isGlitching ? ' footer-glitch-active' : ''}`} 
             id="footer-wordmark" 
             data-text={displayText}
+            aria-label={FOOTER_TEXTS[textIndex]}
           >
-            {displayText}
+            <span className="footer-glitch-text" data-text={displayText}>{displayText}</span>
           </h2>
         </div>
       </div>

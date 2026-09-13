@@ -1,51 +1,92 @@
-import { useState } from 'react'
-import { BusinessFields, ContactFields, InquiryConsent, InquiryFeedback, InquiryPrivacy } from './InquiryFields'
-import useInquirySubmission from './useInquirySubmission'
+import { useState, useEffect, useRef, useCallback } from 'react'
 
-export default function ProjectInquiry() {
-  const { status, submit } = useInquirySubmission()
-  const [submittedValues, setSubmittedValues] = useState({})
-  const handleSubmit = (event) => {
-    event.preventDefault()
-    const form = event.currentTarget
-    const values = Object.fromEntries(new FormData(form))
-    form.elements.message.setCustomValidity(values.message.trim().length < 10 ? 'Tell me a little more about your business (at least 10 characters).' : '')
-    if (!form.reportValidity()) return
-    setSubmittedValues(values)
-    submit(values)
+const testimonials = [
+  {
+    id: 1,
+    name: 'Maria Santos',
+    role: 'Owner, Bloom Cafe',
+    quote:
+      'Kayeen turned our rough ideas into a beautiful website that actually brought in new customers. The whole process was smooth and stress-free.',
+  },
+  {
+    id: 2,
+    name: 'James Rivera',
+    role: 'Founder, JLD Marketing',
+    quote:
+      'Working with Kayeen was one of the best decisions we made. Our site looks professional, loads fast, and our clients always compliment it.',
+  },
+  {
+    id: 3,
+    name: 'Angela Cruz',
+    role: 'Director, Qetsiyah Eco Park',
+    quote:
+      'He listened to every detail and delivered exactly what we envisioned — a site that tells our story and connects with visitors before they even arrive.',
+  },
+]
+
+export default function ClientTestimonials() {
+  const [activeIndex, setActiveIndex] = useState(0)
+  const [isPaused, setIsPaused] = useState(false)
+  const timerRef = useRef(null)
+
+  const advance = useCallback(() => {
+    setActiveIndex((prev) => (prev + 1) % testimonials.length)
+  }, [])
+
+  useEffect(() => {
+    if (isPaused) return
+    timerRef.current = setInterval(advance, 6000)
+    return () => clearInterval(timerRef.current)
+  }, [isPaused, advance])
+
+  const goTo = (index) => {
+    setActiveIndex(index)
+    clearInterval(timerRef.current)
+    setIsPaused(false)
   }
 
+  const current = testimonials[activeIndex]
+
   return (
-    <section className="project-inquiry" aria-labelledby="project-inquiry-title">
-      <div className="project-inquiry-intro">
-        <p className="project-inquiry-kicker">Contact</p>
-        <h2 id="project-inquiry-title"><span className="project-inquiry-heading-line">Build Your</span><span>First Website.</span></h2>
-        <p className="project-inquiry-summary">
-          Give your business a digital home. Work with me and my team to turn your story, services, and goals into a website built to grow with you.
-        </p>
-        <div className="project-inquiry-meta" aria-hidden="true">
-          <span>Made for growing businesses</span>
-          <span>01 / Client inquiry</span>
+    <section
+      className="client-testimonials"
+      aria-labelledby="testimonials-title"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+    >
+      <div className="testimonials-header">
+        <div className="testimonials-tag">
+          <span className="testimonials-dot" />
+          <p className="testimonials-kicker">TESTIMONIALS</p>
         </div>
+        <h2 id="testimonials-title" className="testimonials-title">
+          WHAT MY CLIENT SAYS
+        </h2>
       </div>
 
-      <form className="project-inquiry-form" onSubmit={handleSubmit} noValidate aria-busy={status === 'sending'} onInput={({ target }) => target.setCustomValidity?.('')}>
-        <div className="inquiry-honeypot" aria-hidden="true">
-          <label>Leave this field empty<input name="_honey" type="text" autoComplete="off" tabIndex={-1} /></label>
-        </div>
-        <fieldset className="inquiry-fields" disabled={status === 'sending' || status === 'success'}>
-          <ContactFields />
-          <BusinessFields />
-          <div className="project-inquiry-footer">
-            <InquiryConsent />
-            <button className="project-inquiry-submit" type="submit">
-              {status === 'sending' ? 'Sending…' : status === 'success' ? 'Inquiry submitted' : 'Build my website'} <span aria-hidden="true">↗</span>
-            </button>
-          </div>
-        </fieldset>
-        <InquiryFeedback status={status} values={submittedValues} />
-        <InquiryPrivacy />
-      </form>
+      <div className="testimonials-card" key={current.id}>
+        <blockquote className="testimonials-quote">
+          <span className="testimonials-open-mark" aria-hidden="true">"</span>
+          <p>{current.quote}</p>
+        </blockquote>
+        <footer className="testimonials-attribution">
+          <cite className="testimonials-name">{current.name}</cite>
+          <span className="testimonials-role">{current.role}</span>
+        </footer>
+      </div>
+
+      <div className="testimonials-controls" role="tablist" aria-label="Testimonial navigation">
+        {testimonials.map((t, i) => (
+          <button
+            key={t.id}
+            role="tab"
+            aria-selected={i === activeIndex}
+            aria-label={`Testimonial from ${t.name}`}
+            className={`testimonials-pip${i === activeIndex ? ' testimonials-pip--active' : ''}`}
+            onClick={() => goTo(i)}
+          />
+        ))}
+      </div>
     </section>
   )
 }

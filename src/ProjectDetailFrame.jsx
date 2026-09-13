@@ -1,6 +1,5 @@
 import React, { useEffect, useCallback, useState, useMemo, useRef } from 'react';
 import './project-detail-frame.css';
-import { playButtonClickSound } from './soundEffects';
 
 function ProjectTeam({ project }) {
   const members = project.team || [];
@@ -42,7 +41,6 @@ export default function ProjectDetailFrame({ project, onBack, onNavigate }) {
   const pointerRef = useRef({ startX: 0, startY: 0, active: false });
 
   const handleBack = useCallback(() => {
-    playButtonClickSound();
     if (onBack) onBack();
   }, [onBack]);
 
@@ -97,13 +95,11 @@ export default function ProjectDetailFrame({ project, onBack, onNavigate }) {
 
   const handleNext = useCallback(() => {
     if (total <= 1) return;
-    playButtonClickSound();
     setCurrentIndex((prev) => (prev + 1) % total);
   }, [total]);
 
   const handlePrev = useCallback(() => {
     if (total <= 1) return;
-    playButtonClickSound();
     setCurrentIndex((prev) => (prev - 1 + total) % total);
   }, [total]);
 

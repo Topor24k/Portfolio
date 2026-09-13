@@ -18,6 +18,112 @@
   --contact-subtle: rgba(245, 242, 236, .025);
 }
 
+/* ── Shared form field styles ────────────────────────────── */
+
+.inquiry-honeypot { display: none; }
+
+.project-inquiry-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1.5rem, 3vw, 3rem);
+}
+
+.project-field {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.7rem;
+  color: var(--inquiry-muted);
+  font-size: clamp(0.7rem, 0.82vw, 0.82rem);
+}
+
+.project-field input,
+.project-field textarea {
+  width: 100%;
+  border: 0;
+  border-bottom: 1px solid var(--inquiry-rule);
+  border-radius: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--inquiry-ink);
+  font: inherit;
+  line-height: 1.5;
+  transition: border-color 180ms ease;
+}
+
+.project-field input { height: 2rem; }
+
+.project-field textarea {
+  min-height: 7rem;
+  padding: 0.2rem 0 0.75rem;
+  resize: vertical;
+}
+
+.project-field input:focus,
+.project-field textarea:focus {
+  border-bottom-color: #f04b42;
+}
+
+.project-consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  color: var(--inquiry-muted);
+  font-size: clamp(0.65rem, 0.75vw, 0.75rem);
+  line-height: 1.5;
+  cursor: pointer;
+}
+
+.project-consent input {
+  width: 1rem;
+  height: 1rem;
+  margin: 0.05rem 0 0;
+  accent-color: #f04b42;
+}
+
+.project-inquiry-submit {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 1.5rem;
+  min-height: 3.2rem;
+  padding: 0.8rem 1rem 0.8rem 1.4rem;
+  border: 1px solid var(--inquiry-ink);
+  border-radius: 999px;
+  background: var(--inquiry-ink);
+  color: var(--inquiry-paper);
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  transition: background-color 180ms ease, border-color 180ms ease, color 180ms ease;
+}
+
+.project-inquiry-submit span {
+  display: grid;
+  width: 1.8rem;
+  aspect-ratio: 1;
+  place-items: center;
+  border-radius: 50%;
+  background: #f04b42;
+  color: #101010;
+  font-size: 1rem;
+  transition: transform 180ms ease;
+}
+
+.project-inquiry-submit:focus-visible {
+  outline: 2px solid #f04b42;
+  outline-offset: 4px;
+}
+
+.inquiry-feedback:empty { display: none; }
+.inquiry-feedback { font-size: .78rem; line-height: 1.7; overflow-wrap: anywhere; }
+.inquiry-feedback p { margin: 0; }
+.inquiry-feedback a { display: inline-block; margin-top: .65rem; color: var(--inquiry-ink); text-underline-offset: .25em; }
+.inquiry-feedback[data-status='error'], .inquiry-feedback[data-status='activation'] { padding-left: 1rem; border-left: 2px solid #f04b42; }
+.inquiry-privacy { margin: 0; color: var(--inquiry-muted); font-size: .62rem; line-height: 1.75; }
+.inquiry-privacy a { color: inherit; text-underline-offset: .2em; }
+
 .contact-container { width: min(100%, 100rem); margin-inline: auto; }
 .contact-brief-label { display: flex; justify-content: space-between; gap: 1rem; font-size: .64rem; letter-spacing: .12em; text-transform: uppercase; }
 .contact-composition { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: clamp(3rem, 7vw, 8rem); }
@@ -25,7 +131,109 @@
 .contact-kicker { display: flex; align-items: center; gap: .65rem; margin: 0 0 1.8rem; font-size: .68rem; color: var(--inquiry-muted); }
 .contact-kicker > span { width: .45rem; height: .45rem; background: #f04b42; border-radius: 50%; flex-shrink: 0; }
 .contact-intro h1 { margin: 0; font-family: 'Oswald', Impact, sans-serif; font-weight: 700; font-size: clamp(4rem, 7.8vw, 9rem); line-height: .97; letter-spacing: -.055em; }
-.contact-intro h1 > span { color: #f04b42; }
+.contact-intro h1 > span.contact-title-highlight { color: #f04b42; }
+
+.contact-intro h1 > span.contact-glitch-word {
+  display: inline-block;
+  position: relative;
+  color: var(--inquiry-ink);
+}
+
+.contact-intro h1 > span.contact-glitch-word::before,
+.contact-intro h1 > span.contact-glitch-word::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0;
+  white-space: nowrap;
+}
+
+.contact-intro h1 > span.contact-glitch-word.contact-glitch-active,
+.contact-intro h1 > span.contact-glitch-word.is-glitching {
+  animation: contact-glitch-jitter .32s steps(2, start) infinite;
+}
+
+.contact-intro h1 > span.contact-glitch-word.contact-glitch-active::before,
+.contact-intro h1 > span.contact-glitch-word.is-glitching::before {
+  opacity: .95;
+  color: #00f0ff;
+  left: 3px;
+  text-shadow: -2px 0 #f04b42;
+  transform: translate(-3px, -1px);
+  animation: contact-glitch-slice-1 .36s steps(3, end) infinite;
+}
+
+.contact-intro h1 > span.contact-glitch-word.contact-glitch-active::after,
+.contact-intro h1 > span.contact-glitch-word.is-glitching::after {
+  opacity: .95;
+  color: #ff0055;
+  left: -3px;
+  text-shadow: 2px 0 #132d49;
+  transform: translate(3px, 1px);
+  animation: contact-glitch-slice-2 .36s steps(3, end) infinite;
+}
+
+:not(.dark) .contact-intro h1 > span.contact-glitch-word.contact-glitch-active::before,
+:not(.dark) .contact-intro h1 > span.contact-glitch-word.is-glitching::before {
+  color: #008fa0;
+  text-shadow: -2px 0 #f04b42;
+}
+
+:not(.dark) .contact-intro h1 > span.contact-glitch-word.contact-glitch-active::after,
+:not(.dark) .contact-intro h1 > span.contact-glitch-word.is-glitching::after {
+  color: #d6003c;
+  text-shadow: 2px 0 #baa898;
+}
+
+@keyframes contact-glitch-jitter {
+  0% { transform: translate(0, 0) skewX(0deg); }
+  25% { transform: translate(-1.5px, 0.5px) skewX(-2deg); }
+  50% { transform: translate(1.5px, -0.5px) skewX(1.5deg); }
+  75% { transform: translate(-1px, 0.5px) skewX(-1deg); }
+  100% { transform: translate(0, 0) skewX(0deg); }
+}
+
+@keyframes contact-glitch-slice-1 {
+  0% {
+    clip-path: polygon(0 8%, 100% 8%, 100% 36%, 0 36%);
+    transform: translate(-3px, -1px);
+  }
+  33% {
+    clip-path: polygon(0 42%, 100% 42%, 100% 68%, 0 68%);
+    transform: translate(2px, 0.5px);
+  }
+  66% {
+    clip-path: polygon(0 72%, 100% 72%, 100% 92%, 0 92%);
+    transform: translate(-2px, 1px);
+  }
+  100% {
+    clip-path: polygon(0 8%, 100% 8%, 100% 36%, 0 36%);
+    transform: translate(-3px, -1px);
+  }
+}
+
+@keyframes contact-glitch-slice-2 {
+  0% {
+    clip-path: polygon(0 52%, 100% 52%, 100% 78%, 0 78%);
+    transform: translate(3px, 1px);
+  }
+  33% {
+    clip-path: polygon(0 14%, 100% 14%, 100% 42%, 0 42%);
+    transform: translate(-2px, -0.5px);
+  }
+  66% {
+    clip-path: polygon(0 62%, 100% 62%, 100% 88%, 0 88%);
+    transform: translate(2px, -1px);
+  }
+  100% {
+    clip-path: polygon(0 52%, 100% 52%, 100% 78%, 0 78%);
+    transform: translate(3px, 1px);
+  }
+}
 .contact-lead { margin: 2rem 0 .7rem; font-size: clamp(.95rem, 1.1vw, 1.15rem); }
 .contact-description { max-width: 39ch; margin: 0; font-size: .79rem; line-height: 1.85; color: var(--inquiry-muted); }
 .contact-direct { display: flex; align-items: flex-start; flex-direction: column; gap: .8rem; margin-top: clamp(2rem, 4vw, 4rem); }
@@ -94,6 +302,12 @@
   .contact-email:hover > span { transform: translate(2px, -2px); }
   .contact-copy:hover, .contact-work-link:hover, .contact-back:hover { color: #f04b42; }
   .contact-choice:hover .contact-choice-label { border-color: #f04b42; }
+  .project-inquiry-submit:hover {
+    border-color: #f04b42;
+    background: #f04b42;
+    color: #101010;
+  }
+  .project-inquiry-submit:hover span { transform: translate(2px, -2px); }
 }
 
 @media (max-width: 1000px) {
@@ -128,4 +342,14 @@
 
 @media (prefers-reduced-motion: reduce) {
   .contact-choice-label, .contact-email > span { transition: none; }
+  .project-field input,
+  .project-field textarea,
+  .project-inquiry-submit,
+  .project-inquiry-submit span { transition: none; }
+  .contact-intro h1 > span.contact-glitch-word.contact-glitch-active,
+  .contact-intro h1 > span.contact-glitch-word.is-glitching { animation: none; }
+  .contact-intro h1 > span.contact-glitch-word.contact-glitch-active::before,
+  .contact-intro h1 > span.contact-glitch-word.contact-glitch-active::after,
+  .contact-intro h1 > span.contact-glitch-word.is-glitching::before,
+  .contact-intro h1 > span.contact-glitch-word.is-glitching::after { display: none; }
 }

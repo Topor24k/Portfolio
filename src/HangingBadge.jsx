@@ -34,8 +34,6 @@ export default function HangingBadge({ isOpen, onClose, onOpenProjects }) {
       setExpandRect(null)
       gesture.current = null
       finishing.current = false
-    } else {
-      playIdLaceSound()
     }
   }, [isOpen, expanding])
 

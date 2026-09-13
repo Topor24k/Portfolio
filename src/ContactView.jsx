@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { BusinessFields, ContactFields, InquiryConsent, InquiryFeedback, InquiryPrivacy } from './InquiryFields'
 import useInquirySubmission from './useInquirySubmission'
+import { playTypingSound, playContactGlitchSound, stopGlitchSound } from './soundEffects'
 import './projects.css'
 import './contact-view.css'
 
@@ -9,6 +10,114 @@ const GOALS = ['Introduce my business', 'Get more inquiries', 'Take bookings', '
 const TIMELINES = ['As soon as possible', 'In 1–3 months', 'Flexible / let’s discuss']
 const INITIAL_BRIEF = { business: '', message: '', name: '', email: '', goals: [], timeline: TIMELINES[2], consent: false, _honey: '' }
 
+const GLYPHS = '!/<>-_\\*~01XZ?#&§@[]{}—=+*^'
+const GLITCH_WORDS = ['BUSINESS', 'BRAND', 'VISION', 'PRESENCE']
+
+function GlitchHeadingWord() {
+  const [wordIndex, setWordIndex] = useState(0)
+  const [displayText, setDisplayText] = useState(GLITCH_WORDS[0])
+  const [isGlitching, setIsGlitching] = useState(false)
+  const wordIndexRef = useRef(0)
+  const animFrameRef = useRef(null)
+  const wordRef = useRef(null)
+  const isVisibleRef = useRef(true)
+
+  useEffect(() => {
+    if (!('IntersectionObserver' in window)) {
+      isVisibleRef.current = true
+      return
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        const visible = Boolean(entry && entry.isIntersecting && entry.intersectionRatio >= 0.5)
+        isVisibleRef.current = visible
+        if (!visible) {
+          stopGlitchSound()
+        }
+      },
+      { threshold: [0, 0.5, 1.0] }
+    )
+
+    if (wordRef.current) {
+      observer.observe(wordRef.current)
+    }
+
+    return () => {
+      observer.disconnect()
+      stopGlitchSound()
+    }
+  }, [])
+
+  const triggerGlitch = (fromText, toText) => {
+    if (animFrameRef.current) {
+      cancelAnimationFrame(animFrameRef.current)
+    }
+    setIsGlitching(true)
+    if (isVisibleRef.current) {
+      playContactGlitchSound()
+    }
+    const startTime = performance.now()
+    const duration = 480
+
+    const updateFrame = (now) => {
+      const elapsed = now - startTime
+      const progress = Math.min(1, elapsed / duration)
+
+      if (progress < 1) {
+        const resolvedCount = Math.floor(progress * toText.length)
+        let scrambled = ''
+        for (let i = 0; i < toText.length; i++) {
+          if (i < resolvedCount) {
+            scrambled += toText[i]
+          } else if (toText[i] === ' ') {
+            scrambled += ' '
+          } else {
+            scrambled += GLYPHS[Math.floor(Math.random() * GLYPHS.length)]
+          }
+        }
+        setDisplayText(scrambled)
+        animFrameRef.current = requestAnimationFrame(updateFrame)
+      } else {
+        setDisplayText(toText)
+        setIsGlitching(false)
+      }
+    }
+
+    animFrameRef.current = requestAnimationFrame(updateFrame)
+  }
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (!isVisibleRef.current || document.hidden) return
+      const prev = wordIndexRef.current
+      const next = (prev + 1) % GLITCH_WORDS.length
+      wordIndexRef.current = next
+      setWordIndex(next)
+      triggerGlitch(GLITCH_WORDS[prev], GLITCH_WORDS[next])
+    }, 4000)
+
+    return () => {
+      clearInterval(interval)
+      if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current)
+      stopGlitchSound()
+    }
+  }, [])
+
+  const fullText = `${displayText}.`
+
+  return (
+    <span
+      ref={wordRef}
+      className={`contact-glitch-word contact-glitch-text${isGlitching ? ' contact-glitch-active' : ''}`}
+      data-text={fullText}
+      aria-label={GLITCH_WORDS[wordIndex]}
+    >
+      {fullText}
+    </span>
+  )
+}
+
 export default function ContactView({ onNavigate }) {
   const [step, setStep] = useState(0)
   const [brief, setBrief] = useState(INITIAL_BRIEF)
@@ -16,6 +125,7 @@ export default function ContactView({ onNavigate }) {
   const formRef = useRef(null)
   const stepTitle = useRef(null)
   const previousStep = useRef(0)
+  const lastTypingTime = useRef(0)
   const busy = status === 'sending'
 
   useEffect(() => {
@@ -23,8 +133,38 @@ export default function ContactView({ onNavigate }) {
     previousStep.current = step
   }, [step])
 
+  const handleFormKeyDown = (event) => {
+    const target = event.target
+    if (!target) return
+    const isTextInput =
+      target.tagName === 'TEXTAREA' ||
+      (target.tagName === 'INPUT' &&
+        ['text', 'email', 'tel', 'url', 'search', 'password'].includes(target.type || 'text'))
+
+    if (!isTextInput) return
+
+    const IGNORED_KEYS = [
+      'Shift', 'Control', 'Alt', 'Meta', 'CapsLock', 'Tab', 'Escape',
+      'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight',
+      'Home', 'End', 'PageUp', 'PageDown', 'Insert', 'NumLock', 'ScrollLock', 'Pause', 'ContextMenu'
+    ]
+    if (IGNORED_KEYS.includes(event.key)) return
+    if (event.ctrlKey || event.metaKey || event.altKey) return
+
+    lastTypingTime.current = performance.now()
+    playTypingSound()
+  }
+
   const updateField = ({ target }) => {
     target.setCustomValidity('')
+    const isTextInput =
+      target.tagName === 'TEXTAREA' ||
+      (target.tagName === 'INPUT' &&
+        ['text', 'email', 'tel', 'url', 'search', 'password'].includes(target.type || 'text'))
+    if (isTextInput && performance.now() - lastTypingTime.current >= 40) {
+      lastTypingTime.current = performance.now()
+      playTypingSound()
+    }
     setBrief((value) => ({ ...value, [target.name]: target.type === 'checkbox' ? target.checked : target.value }))
   }
 
@@ -47,7 +187,7 @@ export default function ContactView({ onNavigate }) {
       <div className="contact-composition">
         <div className="contact-intro">
           <p className="contact-kicker"><span aria-hidden="true" /> Reach Out.</p>
-          <h1 id="contact-title">YOUR<br />BUSINESS.<br /><span>ONLINE.</span></h1>
+          <h1 id="contact-title">YOUR<br /><GlitchHeadingWord /><br /><span className="contact-title-highlight">ONLINE.</span></h1>
           <p className="contact-lead">Your first website starts here.</p>
           <p className="contact-description">Tell me what you’re building. My team and I will help turn your business into a website that feels like you and works for your customers.</p>
           <button type="button" className="contact-work-link" onClick={() => onNavigate('projects')}>Explore our work <span aria-hidden="true">↗</span></button>
@@ -61,7 +201,7 @@ export default function ContactView({ onNavigate }) {
             </li>)}
           </ol>
 
-          <form ref={formRef} className="contact-brief-form" onSubmit={handleSubmit} noValidate aria-busy={busy}>
+          <form ref={formRef} className="contact-brief-form" onSubmit={handleSubmit} onKeyDown={handleFormKeyDown} noValidate aria-busy={busy}>
             <div className="inquiry-honeypot" aria-hidden="true">
               <label>Leave this field empty<input name="_honey" type="text" tabIndex={-1} autoComplete="off" value={brief._honey} onChange={updateField} /></label>
             </div>

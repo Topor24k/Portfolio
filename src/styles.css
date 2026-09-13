@@ -241,7 +241,9 @@ button { cursor: pointer; }
 }
 
 .hero-side-left::before,
-.hero-side-left::after {
+.hero-side-left::after,
+.home-glitch-hero::before,
+.home-glitch-hero::after {
   content: attr(data-text);
   position: absolute;
   top: 0;
@@ -253,33 +255,44 @@ button { cursor: pointer; }
   white-space: nowrap;
 }
 
-.hero-side-left.is-glitching {
-  animation: cyberpunk-jitter .32s steps(2, start) infinite;
+.home-glitch-hero.home-glitch-active {
+  animation: home-glitch-jitter .32s steps(2, start) infinite;
 }
 
-.hero-side-left.is-glitching::before {
+.home-glitch-hero.home-glitch-active::before {
   opacity: .95;
   color: #00f0ff;
   transform: translate(-2px, -1px);
-  animation: cyberpunk-slice-1 .36s steps(3, end) infinite;
+  animation: home-glitch-slice-1 .36s steps(3, end) infinite;
 }
 
-.hero-side-left.is-glitching::after {
+.home-glitch-hero.home-glitch-active::after {
   opacity: .95;
   color: #ff0055;
   transform: translate(2px, 1px);
-  animation: cyberpunk-slice-2 .36s steps(3, end) infinite;
+  animation: home-glitch-slice-2 .36s steps(3, end) infinite;
 }
 
-.portfolio-shell:not(.dark) .hero-side-left.is-glitching::before {
+.portfolio-shell:not(.dark) .home-glitch-hero.home-glitch-active::before {
   color: #008fa0;
 }
 
-.portfolio-shell:not(.dark) .hero-side-left.is-glitching::after {
+.portfolio-shell:not(.dark) .home-glitch-hero.home-glitch-active::after {
   color: #d6003c;
 }
 
-@keyframes cyberpunk-jitter {
+.home-glitch-hero.home-glitch-active .home-glitch-text,
+.home-glitch-hero.home-glitch-active .glitch-text-inner {
+  display: inline-block;
+  text-shadow: -1.5px 0 #00f0ff, 1.5px 0 #ff0055;
+}
+
+.portfolio-shell:not(.dark) .home-glitch-hero.home-glitch-active .home-glitch-text,
+.portfolio-shell:not(.dark) .home-glitch-hero.home-glitch-active .glitch-text-inner {
+  text-shadow: -1.5px 0 #008fa0, 1.5px 0 #d6003c;
+}
+
+@keyframes home-glitch-jitter {
   0% { transform: translate(0, 0) skewX(0deg); }
   25% { transform: translate(-1.5px, 0.5px) skewX(-2deg); }
   50% { transform: translate(1.5px, -0.5px) skewX(1.5deg); }
@@ -287,7 +300,7 @@ button { cursor: pointer; }
   100% { transform: translate(0, 0) skewX(0deg); }
 }
 
-@keyframes cyberpunk-slice-1 {
+@keyframes home-glitch-slice-1 {
   0% {
     clip-path: polygon(0 8%, 100% 8%, 100% 36%, 0 36%);
     transform: translate(-3px, -1px);
@@ -306,7 +319,7 @@ button { cursor: pointer; }
   }
 }
 
-@keyframes cyberpunk-slice-2 {
+@keyframes home-glitch-slice-2 {
   0% {
     clip-path: polygon(0 52%, 100% 52%, 100% 78%, 0 78%);
     transform: translate(3px, 1px);

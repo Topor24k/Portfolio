@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import LazyImage from './LazyImage'
 import './project-modal.css'
 
 export default function ProjectModal({ project, onClose, onNavigate }) {
@@ -60,12 +61,12 @@ export default function ProjectModal({ project, onClose, onNavigate }) {
         <div className="project-modal-gallery">
           {project.images.map((img, i) => (
             <figure className="project-modal-figure" key={i}>
-              <img
+              <LazyImage
                 src={img.src}
                 alt={img.alt}
                 className="project-modal-img"
+                aspectRatio="16 / 9"
                 loading="lazy"
-                draggable="false"
               />
               {img.caption && (
                 <figcaption className="project-modal-caption">

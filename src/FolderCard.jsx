@@ -1,4 +1,5 @@
 import './folder-card.css'
+import LazyImage from './LazyImage'
 
 export default function FolderCard({ project, index, onSelect }) {
   return (
@@ -31,12 +32,12 @@ export default function FolderCard({ project, index, onSelect }) {
       <div className="folder-body">
         {/* Cover image */}
         <div className="folder-cover">
-          <img
+          <LazyImage
             src={project.cover}
             alt={project.alt}
             className="folder-cover-img"
+            aspectRatio="16 / 9"
             loading="lazy"
-            draggable="false"
           />
         </div>
 

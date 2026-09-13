@@ -8,9 +8,61 @@
   text-rendering: geometricPrecision;
 }
 
-* { box-sizing: border-box; }
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
 
-html, body, #root { min-height: 100%; margin: 0; }
+html,
+body,
+#root {
+  min-height: 100%;
+  margin: 0;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Allow text selection, typing, and editing exclusively in form inputs and editable elements */
+input,
+textarea,
+[contenteditable],
+[contenteditable="true"],
+[contenteditable="plaintext-only"] {
+  -webkit-user-select: text !important;
+  -moz-user-select: text !important;
+  -ms-user-select: text !important;
+  user-select: text !important;
+  -webkit-touch-callout: default !important;
+}
+
+/* Prevent accidental ghost image/svg/button dragging across static UI */
+img,
+svg,
+button {
+  -webkit-user-drag: none;
+  user-drag: none;
+}
+
+/* Highlighting styles: active selection color inside inputs/textareas, none on static UI */
+::selection {
+  background: transparent;
+}
+
+input::selection,
+textarea::selection,
+[contenteditable]::selection,
+[contenteditable="true"]::selection {
+  background: #f04b42;
+  color: #ffffff;
+}
 
 html,
 body,
@@ -60,6 +112,25 @@ button { cursor: pointer; }
   justify-content: space-between;
   padding: 28px 3.1vw 0;
   transition: padding .25s ease;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.site-header,
+.site-header * {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-user-drag: none;
+}
+
+.site-header ::selection {
+  background: transparent;
 }
 
 .site-header.is-scrolled {

@@ -274,6 +274,21 @@
   font-size: 10px;
   line-height: 1.5;
   letter-spacing: .12em;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.badge-caption,
+.badge-caption * {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-user-drag: none;
 }
 
 .badge-side-label { color: #a5673a; }

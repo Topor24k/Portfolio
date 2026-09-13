@@ -33,6 +33,25 @@
 .projects-header {
   text-align: left;
   margin-bottom: 48px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.projects-header,
+.projects-header * {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-user-drag: none;
+}
+
+.projects-header ::selection {
+  background: transparent;
 }
 
 .projects-eyebrow {
@@ -76,6 +95,25 @@
   border-bottom: 1.5px solid rgba(16, 16, 16, 0.12);
   padding-bottom: 16px;
   margin-bottom: 40px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.projects-group-header,
+.projects-group-header * {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-user-drag: none;
+}
+
+.projects-group-header ::selection {
+  background: transparent;
 }
 
 .dark .projects-group-header {

@@ -1,4 +1,5 @@
 import React, { useEffect, useCallback, useState, useMemo, useRef } from 'react';
+import LazyImage from './LazyImage';
 import './project-detail-frame.css';
 
 function ProjectTeam({ project }) {
@@ -22,7 +23,13 @@ function ProjectTeam({ project }) {
         {members.map((member, index) => (
           <article className="project-team-member" key={member.name}>
             <div className="project-team-photo">
-              <img src={member.image} alt={member.alt} loading="lazy" decoding="async" />
+              <LazyImage
+                src={member.image}
+                alt={member.alt}
+                loading="lazy"
+                decoding="async"
+                aspectRatio="1 / 1"
+              />
               <span aria-hidden="true">0{index + 1}</span>
             </div>
             <div className="project-team-credit">
@@ -212,11 +219,11 @@ export default function ProjectDetailFrame({ project, onBack, onNavigate }) {
                 tabIndex={isLeft || isRight ? 0 : -1}
                 aria-label={isLeft ? 'Previous slide' : isRight ? 'Next slide' : undefined}
               >
-                <img
+                <LazyImage
                   src={item.src}
                   alt={item.alt || `${project.name} photo`}
                   className="carousel-img"
-                  draggable={false}
+                  aspectRatio="16 / 9"
                 />
               </div>
             );

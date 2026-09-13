@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import LazyImage from './LazyImage'
 import './about-view.css'
 
 const WORD_SETS = [
@@ -71,13 +72,14 @@ export default function AboutView({ onNavigate }) {
         <section className="about-cover" aria-labelledby="about-title">
           <div className="about-hero-grid">
             <figure className="about-portrait">
-              <img
+              <LazyImage
                 src="/About%20Me%20Images/Kayeen%201.jpg"
                 alt="Kayeen M. Campaña in a black jacket and tie, looking toward the right"
                 width="1080"
                 height="1080"
-                draggable="false"
+                aspectRatio="1 / 1"
                 fetchPriority="high"
+                loading="eager"
               />
               <figcaption className="about-sr-only">Fig. 01 / Portrait & stance</figcaption>
             </figure>
@@ -120,13 +122,13 @@ export default function AboutView({ onNavigate }) {
             </div>
           </div>
           <figure className="about-photo-story">
-            <img
+            <LazyImage
               className="about-photo-story-mirrored"
               src="/About%20Me%20Images/My%20Projects%20Side%20Photo.png"
               alt="Kayeen looking up from a laptop at a café table"
               width="1070"
               height="1082"
-              draggable="false"
+              aspectRatio="1070 / 1082"
               loading="lazy"
               decoding="async"
             />
@@ -172,12 +174,12 @@ export default function AboutView({ onNavigate }) {
             </ol>
           </div>
           <figure className="about-photo-story">
-            <img
+            <LazyImage
               src="/About%20Me%20Images/Thank%20You%20Side%20Photo.png"
               alt="Kayeen smiling and making a peace sign, with coffee and a ThinkPad"
               width="1233"
               height="1135"
-              draggable="false"
+              aspectRatio="1233 / 1135"
               loading="lazy"
               decoding="async"
             />

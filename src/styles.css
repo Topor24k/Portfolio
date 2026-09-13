@@ -424,34 +424,6 @@ button { cursor: pointer; }
   .hero-side { font-size: 10px; letter-spacing: .18em; }
 }
 
-@media (max-width: 640px) {
-  .site-header { align-items: center; justify-content: space-between; padding-top: 18px; gap: 8px; flex-wrap: wrap; }
-  .desktop-nav { 
-    position: static; 
-    transform: none; 
-    width: 100%; 
-    justify-content: center; 
-    order: 3; 
-    margin-top: 10px;
-    gap: 0.5rem;
-    padding: 6px 12px;
-  }
-  .nav-link { font-size: 10px; padding: 4px 6px; letter-spacing: .12em; }
-  .utility-button { min-height: 36px; padding: 0 9px; font-size: 10px; }
-  .hero { min-height: calc(100svh - 61px); padding: 0 5vw; }
-  .hero h1 { font-size: clamp(3.2rem, 14vw, 6.2rem); white-space: normal; }
-  .hero-side { font-size: 9px; letter-spacing: .12em; }
-  .hero-side-left { top: -1.3rem; left: 2px; }
-  .hero-side-right { bottom: -1.4rem; }
-}
-
-@media (max-width: 480px) {
-  .site-header { padding: 14px 4vw 0; gap: 4px; }
-  .desktop-nav { gap: 0.25rem; padding: 4px 8px; margin-top: 6px; }
-  .nav-link { font-size: 9px; padding: 3px 5px; letter-spacing: .1em; }
-  .utility-button { padding: 0 7px; font-size: 9px; letter-spacing: .12em; }
-}
-
 /* Info Modal Styles */
 .info-modal-backdrop {
   position: fixed;

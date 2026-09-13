@@ -11,6 +11,8 @@ import PageWipe from './PageWipe'
 import SiteFooter from './SiteFooter'
 import { setSoundMuted, playNavSound, playIdLaceSound, playButtonClickSound, setActiveView, stopGlitchSound } from './soundEffects'
 
+import './mobile.css'
+
 const VALID_VIEWS = ['home', 'projects', 'about', 'contact']
 
 function parseHash(hashStr) {

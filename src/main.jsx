@@ -296,7 +296,7 @@ function App() {
           </div>
 
           <p className="hero-guide-prompt" aria-hidden="true">
-            <span>CLICK NAME TO VIEW ID ↑</span>
+            <span>CLICK NAME TO VIEW ID</span>
           </p>
         </section>
       )}

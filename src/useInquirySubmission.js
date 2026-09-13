@@ -23,13 +23,19 @@ export default function useInquirySubmission() {
     try {
       const result = await deliverInquiry(values, controller.signal)
       if (mounted.current) setStatus(result)
+      return result
     } catch {
       if (mounted.current) setStatus('error')
+      return 'error'
     } finally {
       window.clearTimeout(timeout)
       pending.current = null
     }
   }
 
-  return { status, submit }
+  const reset = () => {
+    if (mounted.current) setStatus('idle')
+  }
+
+  return { status, submit, reset }
 }

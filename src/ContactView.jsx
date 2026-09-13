@@ -121,7 +121,8 @@ function GlitchHeadingWord() {
 export default function ContactView({ onNavigate }) {
   const [step, setStep] = useState(0)
   const [brief, setBrief] = useState(INITIAL_BRIEF)
-  const { status, submit } = useInquirySubmission()
+  const { status, submit, reset } = useInquirySubmission()
+  const [submittedNotice, setSubmittedNotice] = useState(false)
   const formRef = useRef(null)
   const stepTitle = useRef(null)
   const previousStep = useRef(0)
@@ -132,6 +133,35 @@ export default function ContactView({ onNavigate }) {
     if (step !== previousStep.current) stepTitle.current?.focus()
     previousStep.current = step
   }, [step])
+
+  useEffect(() => {
+    if (status === 'success') {
+      const timer = window.setTimeout(() => {
+        // Clear all text fields and selections
+        setBrief(INITIAL_BRIEF)
+        if (formRef.current) {
+          try {
+            formRef.current.reset()
+          } catch (_) {}
+        }
+        // Return to 01 Your business
+        setStep(0)
+        setSubmittedNotice(true)
+        reset()
+      }, 1800)
+
+      return () => window.clearTimeout(timer)
+    }
+  }, [status, reset])
+
+  useEffect(() => {
+    if (submittedNotice) {
+      const timer = window.setTimeout(() => {
+        setSubmittedNotice(false)
+      }, 6000)
+      return () => window.clearTimeout(timer)
+    }
+  }, [submittedNotice])
 
   const handleFormKeyDown = (event) => {
     const target = event.target
@@ -156,6 +186,7 @@ export default function ContactView({ onNavigate }) {
   }
 
   const updateField = ({ target }) => {
+    if (submittedNotice) setSubmittedNotice(false)
     target.setCustomValidity('')
     const isTextInput =
       target.tagName === 'TEXTAREA' ||
@@ -168,10 +199,13 @@ export default function ContactView({ onNavigate }) {
     setBrief((value) => ({ ...value, [target.name]: target.type === 'checkbox' ? target.checked : target.value }))
   }
 
-  const toggleGoal = (goal) => setBrief((value) => ({
-    ...value,
-    goals: value.goals.includes(goal) ? value.goals.filter((item) => item !== goal) : [...value.goals, goal],
-  }))
+  const toggleGoal = (goal) => {
+    if (submittedNotice) setSubmittedNotice(false)
+    setBrief((value) => ({
+      ...value,
+      goals: value.goals.includes(goal) ? value.goals.filter((item) => item !== goal) : [...value.goals, goal],
+    }))
+  }
 
   const handleSubmit = (event) => {
     event.preventDefault()
@@ -249,7 +283,7 @@ export default function ContactView({ onNavigate }) {
                 {busy ? 'Sending…' : status === 'success' ? 'Inquiry submitted' : step === 2 ? 'Send my inquiry' : 'Continue'}<span aria-hidden="true">{status === 'success' ? '✓' : '↗'}</span>
               </button>
             </div>
-            <InquiryFeedback status={status} values={brief} />
+            <InquiryFeedback status={submittedNotice ? 'success' : status} values={brief} />
             {step === 2 && <InquiryPrivacy />}
           </form>
         </div>

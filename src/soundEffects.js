@@ -31,7 +31,7 @@ const TYPING_POOL_SIZE = 8
 let typingAudioPool = []
 let typingPoolIndex = 0
 
-function getAudioContext() {
+function getAudioContext(userInitiated = false) {
   if (typeof window === 'undefined') return null
   try {
     if (!audioCtx) {
@@ -40,11 +40,23 @@ function getAudioContext() {
         audioCtx = new AudioContextClass()
       }
     }
-    if (audioCtx && audioCtx.state === 'suspended') {
+    if (userInitiated && audioCtx && audioCtx.state === 'suspended') {
       audioCtx.resume().catch(() => {})
     }
   } catch (_) {}
   return audioCtx
+}
+
+if (typeof window !== 'undefined') {
+  const unlockAudio = () => {
+    if (audioCtx && audioCtx.state === 'suspended') {
+      audioCtx.resume().catch(() => {})
+    }
+    window.removeEventListener('pointerdown', unlockAudio)
+    window.removeEventListener('keydown', unlockAudio)
+  }
+  window.addEventListener('pointerdown', unlockAudio, { passive: true })
+  window.addEventListener('keydown', unlockAudio, { passive: true })
 }
 
 // Pre-load audio elements and pre-decode buffers for zero-latency playback
@@ -165,7 +177,7 @@ export function playNavSound() {
 export function playIdLaceSound() {
   if (soundMuted || activeView !== 'home' || typeof window === 'undefined') return
   try {
-    const ctx = getAudioContext()
+    const ctx = getAudioContext(true)
     if (ctx && idLaceBuffer) {
       const source = ctx.createBufferSource()
       source.buffer = idLaceBuffer
@@ -189,7 +201,7 @@ export function playIdLaceSound() {
 export function playIdSwitchSound() {
   if (soundMuted || activeView !== 'home' || typeof window === 'undefined') return
   try {
-    const ctx = getAudioContext()
+    const ctx = getAudioContext(true)
     if (ctx && idSwitchBuffer) {
       const source = ctx.createBufferSource()
       source.buffer = idSwitchBuffer
@@ -213,7 +225,7 @@ export function playIdSwitchSound() {
 export function playButtonClickSound(force = false) {
   if ((soundMuted && !force) || typeof window === 'undefined') return
   try {
-    const ctx = getAudioContext()
+    const ctx = getAudioContext(true)
     // Web Audio API buffer playback allows unlimited overlapping rapid clicks with zero latency
     if (ctx && buttonClickBuffer) {
       const source = ctx.createBufferSource()
@@ -300,7 +312,7 @@ export function playSound(type) {
 export function playTypingSound() {
   if (soundMuted || activeView !== 'contact' || typeof window === 'undefined') return
   try {
-    const ctx = getAudioContext()
+    const ctx = getAudioContext(true)
     if (ctx && typingBuffer) {
       const source = ctx.createBufferSource()
       source.buffer = typingBuffer
@@ -341,7 +353,7 @@ function playGlitchAudioClip() {
   stopGlitchSound()
 
   try {
-    const ctx = getAudioContext()
+    const ctx = getAudioContext(true)
     if (ctx && glitchBuffer) {
       const source = ctx.createBufferSource()
       source.buffer = glitchBuffer

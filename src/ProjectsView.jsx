@@ -13,6 +13,12 @@ export default function ProjectsView({ onNavigate, setIsProjectDetailOpen }) {
         const id = hash.replace('project/', '')
         return projects.find((p) => p.id === id) || null
       }
+      try {
+        const savedProject = sessionStorage.getItem('kc_portfolio_project') || localStorage.getItem('kc_portfolio_project')
+        if (savedProject) {
+          return projects.find((p) => p.id === savedProject) || null
+        }
+      } catch (e) {}
     }
     return null
   })
@@ -42,12 +48,24 @@ export default function ProjectsView({ onNavigate, setIsProjectDetailOpen }) {
   const handleSelectProject = (proj) => {
     setSelectedProject(proj)
     window.location.hash = `project/${proj.id}`
+    try {
+      sessionStorage.setItem('kc_portfolio_view', 'projects')
+      sessionStorage.setItem('kc_portfolio_project', proj.id)
+      localStorage.setItem('kc_portfolio_view', 'projects')
+      localStorage.setItem('kc_portfolio_project', proj.id)
+    } catch (e) {}
     window.scrollTo({ top: 0, behavior: 'instant' })
   }
 
   const handleBackToProjects = () => {
     setSelectedProject(null)
     window.location.hash = 'projects'
+    try {
+      sessionStorage.setItem('kc_portfolio_view', 'projects')
+      sessionStorage.removeItem('kc_portfolio_project')
+      localStorage.setItem('kc_portfolio_view', 'projects')
+      localStorage.removeItem('kc_portfolio_project')
+    } catch (e) {}
     window.scrollTo({ top: 0, behavior: 'instant' })
   }
 
@@ -76,6 +94,7 @@ export default function ProjectsView({ onNavigate, setIsProjectDetailOpen }) {
         <p className="projects-eyebrow">PORTFOLIO ARCHIVE</p>
         <h1 className="projects-title">SELECTED WORK</h1>
       </header>
+
       {/* Client Projects Section */}
       <section className="projects-group-section">
         <div className="projects-group-header">

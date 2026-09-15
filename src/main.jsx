@@ -9,6 +9,7 @@ import NavigationMenu from './NavigationMenu'
 import GlitchRole from './GlitchRole'
 import PageWipe from './PageWipe'
 import SiteFooter from './SiteFooter'
+import OpeningIntro from './OpeningIntro'
 import { setSoundMuted, playNavSound, playIdLaceSound, playButtonClickSound, setActiveView, stopGlitchSound } from './soundEffects'
 
 import './mobile.css'
@@ -60,6 +61,7 @@ function getInitialNavigation() {
 function App() {
   const [isLight, setIsLight] = useState(false)
   const [soundOn, setSoundOn] = useState(true)
+  const [showIntro, setShowIntro] = useState(() => !parseHash(window.location.hash)?.projectId)
   const [isCardOpen, setIsCardOpen] = useState(false)
   const [isProjectDetailOpen, setIsProjectDetailOpen] = useState(() => {
     return Boolean(getInitialNavigation().projectId)
@@ -90,8 +92,8 @@ function App() {
   }, [])
 
   useEffect(() => {
-    setActiveView(currentView)
-  }, [currentView])
+    setActiveView(showIntro ? 'intro' : currentView)
+  }, [currentView, showIntro])
 
   useEffect(() => {
     const handleHashChange = () => {
@@ -120,6 +122,7 @@ function App() {
     const handleGlobalClick = (event) => {
       const target = event.target
       if (!target) return
+      if (target.closest('.opening-intro')) return
       const button = target.closest('button, [role="button"], input[type="submit"], input[type="button"], .contact-choice, .project-consent')
       if (!button) return
       if (button.disabled || button.getAttribute('aria-disabled') === 'true') return
@@ -204,6 +207,12 @@ function App() {
 
   return (
     <main className={`portfolio-shell ${isLight ? 'light' : 'dark'}`}>
+      {showIntro && <OpeningIntro soundOn={soundOn}
+        onSoundChange={(enabled) => { setSoundOn(enabled); setSoundMuted(!enabled) }}
+        onComplete={() => {
+          setShowIntro(false)
+          requestAnimationFrame(() => document.getElementById('hero-title')?.focus({ preventScroll: true }))
+        }} />}
       <PageWipe active={isPageTransitioning} label={transitionLabel} />
       {!isProjectDetailOpen && (
         <header className={`site-header${isScrolled ? ' is-scrolled' : ''}`}>
@@ -239,8 +248,8 @@ function App() {
       ) : (
         <section className="hero" id="top" aria-labelledby="hero-title">
           <div className="hero-title-wrapper">
-            <GlitchRole />
-            <h1 id="hero-title">
+            {showIntro ? <p className="hero-side hero-side-left">CREATIVE DEVELOPER</p> : <GlitchRole />}
+            <h1 id="hero-title" tabIndex={-1}>
               <button
                 className="hero-name-lockup"
                 type="button"

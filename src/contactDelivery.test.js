@@ -13,9 +13,9 @@ test('notification includes business details and the visitor’s reply address',
   assert.equal(payload.email, 'visitor@example.com')
   assert.equal(payload.business, 'Sample & Co.')
   assert.equal(payload.website_goals, 'Take bookings, Get more inquiries')
-  assert.equal(payload._subject, 'New website inquiry — Sample & Co.')
-  assert.equal(payload._honey, '')
-  assert.equal(createInquiryPayload({ ...brief, _honey: 'spam' })._honey, 'spam')
+  assert.equal(payload.subject, 'New website inquiry — Sample & Co.')
+  assert.equal(payload.botcheck, '')
+  assert.equal(createInquiryPayload({ ...brief, _honey: 'spam' }).botcheck, 'spam')
 })
 
 test('short form without optional goals still produces a complete notification', () => {
@@ -47,18 +47,13 @@ test('fallback email safely encodes the brief and retains all selected goals', (
 test('accepted notifications use the correct destination without sending a live email', async (t) => {
   const controller = new AbortController()
   t.mock.method(globalThis, 'fetch', async (url, options) => {
-    assert.equal(url, `https://formsubmit.co/ajax/${CONTACT_EMAIL}`)
+    assert.equal(url, 'https://api.web3forms.com/submit')
     assert.equal(options.method, 'POST')
     assert.equal(options.signal, controller.signal)
     assert.equal(JSON.parse(options.body).email, 'visitor@example.com')
-    return { ok: true, json: async () => ({ success: 'true' }) }
+    return { ok: true, json: async () => ({ success: true }) }
   })
   assert.equal(await deliverInquiry(brief, controller.signal), 'success')
-})
-
-test('activation is distinguished from successful submission', async (t) => {
-  t.mock.method(globalThis, 'fetch', async () => ({ ok: true, json: async () => ({ success: 'true', message: 'Please activate this form.' }) }))
-  assert.equal(await deliverInquiry(brief), 'activation')
 })
 
 test('HTTP failures and service rejections do not report success', async (t) => {

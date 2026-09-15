@@ -1,5 +1,6 @@
 export const CONTACT_EMAIL = 'kayeencampana@gmail.com'
-const CONTACT_ENDPOINT = `https://formsubmit.co/ajax/${CONTACT_EMAIL}`
+export const WEB3FORMS_ACCESS_KEY = 'f1b51e4e-8c33-436e-bc3f-749061d02052'
+const CONTACT_ENDPOINT = 'https://api.web3forms.com/submit'
 
 export function createInquiryPayload(values) {
   const custom = values.customGoal?.trim()
@@ -9,16 +10,17 @@ export function createInquiryPayload(values) {
   ].filter(Boolean)
 
   return {
-    name: values.name.trim(),
-    email: values.email.trim(),
-    business: values.business.trim(),
-    message: values.message.trim(),
+    access_key: WEB3FORMS_ACCESS_KEY,
+    subject: `New website inquiry — ${values.business?.trim() || 'Client'}`,
+    from_name: 'KC Portfolio Inquiry',
+    name: values.name?.trim() || '',
+    email: values.email?.trim() || '',
+    business: values.business?.trim() || '',
+    message: values.message?.trim() || '',
     website_goals: combinedGoals.join(', ') || 'To discuss together',
     preferred_timeline: values.timeline || 'Flexible / let’s discuss',
     consent: 'Agreed to be contacted about this website inquiry',
-    _subject: `New website inquiry — ${values.business.trim()}`,
-    _template: 'table',
-    _honey: values._honey || '',
+    botcheck: values._honey || '',
   }
 }
 
@@ -51,12 +53,8 @@ export async function deliverInquiry(values, signal) {
     signal,
   })
   const result = await response.json()
-  // An activation response is not confirmation of delivery to the inbox.
-  if (/activat|confirm.*email|verify.*email/i.test(result.message || '')) {
-    return 'activation'
-  }
   if (!response.ok || !(result.success === true || result.success === 'true')) {
-    throw new Error('The email service did not accept the inquiry.')
+    throw new Error(result.message || 'The email service did not accept the inquiry.')
   }
   return 'success'
 }

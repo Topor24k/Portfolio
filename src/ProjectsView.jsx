@@ -123,7 +123,7 @@ export default function ProjectsView({ onNavigate, setIsProjectDetailOpen }) {
             <span className="projects-group-dot" />
             <h2 className="projects-group-title">PERSONAL PROJECTS</h2>
           </div>
-          <span className="projects-group-count">0{personalProjects.length} ARCHIVE</span>
+          <span className="projects-group-count">0{personalProjects.length} PROJECTS</span>
         </div>
         <div className="projects-grid">
           {personalProjects.map((project, i) => (

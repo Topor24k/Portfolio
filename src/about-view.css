@@ -261,7 +261,7 @@
   gap: 1rem;
   padding-block: 1.25rem;
   border-top: 1px solid var(--about-rule);
-  align-items: baseline;
+  align-items: center;
 }
 .about-interest-number { color: var(--about-accent); font-size: 0.625rem; letter-spacing: 0.1em; }
 .about-interests h3 {
@@ -269,6 +269,7 @@
   font-family: 'Oswald', Impact, sans-serif;
   font-size: clamp(1.2rem, 1.65vw, 1.65rem);
   font-weight: 600;
+  line-height: 1.1;
   text-transform: uppercase;
 }
 

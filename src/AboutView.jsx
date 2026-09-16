@@ -143,14 +143,6 @@ export default function AboutView({ onNavigate }) {
           <blockquote>
             Success is not about doing everything perfectly, but about <span className="about-accent">consistently doing what's best.</span>
           </blockquote>
-          <div className="about-creed">
-            <span className="about-label">The creed I carry</span>
-            <p>
-              “I believe that real excellence is not about doing everything perfectly at first,
-              but about consistently dedicating yourself to bringing aesthetic warmth and robust
-              code mechanics to every single product.”
-            </p>
-          </div>
         </section>
 
         <section className="about-escapes about-section" aria-labelledby="about-escapes-title">

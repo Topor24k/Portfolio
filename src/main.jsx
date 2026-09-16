@@ -10,6 +10,9 @@ import GlitchRole from './GlitchRole'
 import PageWipe from './PageWipe'
 import SiteFooter from './SiteFooter'
 import OpeningIntro from './OpeningIntro'
+import HeroReveal from './HeroReveal'
+import MusicPlayer from './MusicPlayer'
+import { readAudioPreference, saveAudioPreference } from './audioPreferences'
 import { setSoundMuted, playNavSound, playIdLaceSound, playButtonClickSound, setActiveView, stopGlitchSound } from './soundEffects'
 
 import './mobile.css'
@@ -60,7 +63,8 @@ function getInitialNavigation() {
 
 function App() {
   const [isLight, setIsLight] = useState(false)
-  const [soundOn, setSoundOn] = useState(true)
+  const [soundOn, setSoundOn] = useState(() => readAudioPreference('effects'))
+  const [musicOn, setMusicOn] = useState(() => readAudioPreference('music'))
   const [showIntro, setShowIntro] = useState(() => !parseHash(window.location.hash)?.projectId)
   const [isCardOpen, setIsCardOpen] = useState(false)
   const [isProjectDetailOpen, setIsProjectDetailOpen] = useState(() => {
@@ -79,6 +83,21 @@ function App() {
   })
   const reopenAfter = useRef(0)
   const transitionTimers = useRef([])
+
+  const changeSound = (enabled) => {
+    setSoundOn(enabled)
+    setSoundMuted(!enabled)
+    saveAudioPreference('effects',enabled)
+    if (enabled) playButtonClickSound()
+  }
+
+  const toggleMusic = (override) => {
+    const next = typeof override === 'boolean' ? override : !musicOn
+    setMusicOn(next)
+    saveAudioPreference('music', next)
+  }
+
+  useEffect(() => { setSoundMuted(!soundOn) }, [soundOn])
 
   const viewLabels = {
     home: 'HOME',
@@ -208,25 +227,30 @@ function App() {
   return (
     <main className={`portfolio-shell ${isLight ? 'light' : 'dark'}`}>
       {showIntro && <OpeningIntro soundOn={soundOn}
-        onSoundChange={(enabled) => { setSoundOn(enabled); setSoundMuted(!enabled) }}
+        onSoundChange={changeSound}
         onComplete={() => {
           setShowIntro(false)
           requestAnimationFrame(() => document.getElementById('hero-title')?.focus({ preventScroll: true }))
         }} />}
       <PageWipe active={isPageTransitioning} label={transitionLabel} />
+      <MusicPlayer
+        active={!showIntro}
+        musicOn={musicOn}
+        onMusicToggle={toggleMusic}
+        showEffectsControl={isProjectDetailOpen}
+        soundOn={soundOn}
+        onSoundChange={changeSound}
+      />
       {!isProjectDetailOpen && (
         <header className={`site-header${isScrolled ? ' is-scrolled' : ''}`}>
           <button
             className="utility-button sound-toggle-btn"
             type="button"
-            onClick={() => {
-              const next = !soundOn
-              setSoundOn(next)
-              setSoundMuted(!next)
-              playButtonClickSound(true)
-            }}
+            aria-pressed={soundOn}
+            aria-label={soundOn ? 'Turn sound effects off' : 'Turn sound effects on'}
+            onClick={() => changeSound(!soundOn)}
           >
-            SOUND: {soundOn ? 'ON' : 'OFF'}
+            SFX: {soundOn ? 'ON' : 'OFF'}
           </button>
 
           <NavigationMenu currentView={currentView} onNavigate={handleNavigate} />
@@ -247,6 +271,7 @@ function App() {
         <ProjectsView onNavigate={handleNavigate} setIsProjectDetailOpen={setIsProjectDetailOpen} />
       ) : (
         <section className="hero" id="top" aria-labelledby="hero-title">
+          <HeroReveal active={!showIntro && !isCardOpen && !isPageTransitioning} isLight={isLight} />
           <div className="hero-title-wrapper">
             {showIntro ? <p className="hero-side hero-side-left">CREATIVE DEVELOPER</p> : <GlitchRole />}
             <h1 id="hero-title" tabIndex={-1}>

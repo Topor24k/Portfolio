@@ -51,12 +51,10 @@ test('accepted notifications use the correct destination without sending a live 
   const controller = new AbortController()
   t.mock.method(globalThis, 'fetch', async (url, options) => {
     assert.equal(url, `https://formsubmit.co/ajax/${CONTACT_EMAIL}`)
-    assert.equal(url, 'https://api.web3forms.com/submit')
     assert.equal(options.method, 'POST')
     assert.equal(options.signal, controller.signal)
     assert.equal(JSON.parse(options.body).email, 'visitor@example.com')
     return { ok: true, json: async () => ({ success: 'true' }) }
-    return { ok: true, json: async () => ({ success: true }) }
   })
   assert.equal(await deliverInquiry(brief, controller.signal), 'success')
 })

@@ -1,7 +1,6 @@
 export const CONTACT_EMAIL = 'kayeencampana@gmail.com'
-const CONTACT_ENDPOINT = `https://formsubmit.co/ajax/${CONTACT_EMAIL}`
 export const WEB3FORMS_ACCESS_KEY = 'f1b51e4e-8c33-436e-bc3f-749061d02052'
-const CONTACT_ENDPOINT = 'https://api.web3forms.com/submit'
+const CONTACT_ENDPOINT = `https://formsubmit.co/ajax/${CONTACT_EMAIL}`
 
 export function createInquiryPayload(values) {
   const custom = values.customGoal?.trim()
@@ -10,24 +9,22 @@ export function createInquiryPayload(values) {
     custom ? `Other: ${custom}` : '',
   ].filter(Boolean)
 
+  const business = values.business?.trim() || ''
+
   return {
-    name: values.name.trim(),
-    email: values.email.trim(),
-    business: values.business.trim(),
-    message: values.message.trim(),
-    access_key: WEB3FORMS_ACCESS_KEY,
-    subject: `New website inquiry — ${values.business?.trim() || 'Client'}`,
-    from_name: 'KC Portfolio Inquiry',
     name: values.name?.trim() || '',
     email: values.email?.trim() || '',
-    business: values.business?.trim() || '',
+    business,
     message: values.message?.trim() || '',
     website_goals: combinedGoals.join(', ') || 'To discuss together',
     preferred_timeline: values.timeline || 'Flexible / let’s discuss',
     consent: 'Agreed to be contacted about this website inquiry',
-    _subject: `New website inquiry — ${values.business.trim()}`,
+    _subject: `New website inquiry — ${business}`,
     _template: 'table',
     _honey: values._honey || '',
+    access_key: WEB3FORMS_ACCESS_KEY,
+    subject: `New website inquiry — ${business || 'Client'}`,
+    from_name: 'KC Portfolio Inquiry',
     botcheck: values._honey || '',
   }
 }
@@ -66,7 +63,6 @@ export async function deliverInquiry(values, signal) {
     return 'activation'
   }
   if (!response.ok || !(result.success === true || result.success === 'true')) {
-    throw new Error('The email service did not accept the inquiry.')
     throw new Error(result.message || 'The email service did not accept the inquiry.')
   }
   return 'success'

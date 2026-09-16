@@ -50,16 +50,13 @@ export function InquiryPrivacy() {
 export function InquiryFeedback({ status, values }) {
   const messages = {
     sending: 'Sending your inquiry…',
-    success: 'Inquiry submitted. Thank you for introducing your business — I’ll reply to the email you provided.',
     activation: 'Email delivery is awaiting activation. Please use the email link below to reach me directly.',
-    error: 'We couldn’t confirm your submission. Your details are still here. Try again, or send them by email.',
     success: 'Inquiry submitted! Thank you for introducing your business — I’ll reply to the email you provided.',
     error: 'We couldn’t confirm your submission. Your details are still here. Try again, or send them directly by email.',
   }
   return <div className="inquiry-feedback" data-status={status} role="status" aria-live="polite" aria-atomic="true">
     {messages[status] && <p>{messages[status]}</p>}
     {(status === 'error' || status === 'activation') &&
-    {status === 'error' &&
       <a href={inquiryEmailLink(values)}>Email {CONTACT_EMAIL} ↗</a>}
   </div>
 }

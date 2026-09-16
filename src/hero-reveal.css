@@ -1,0 +1,10 @@
+#top { isolation: isolate; }
+#top > .hero-title-wrapper { z-index: 1; }
+.hero-reveal { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; --reveal-alpha: 0; }
+.hero-reveal canvas { display: block; width: 100%; height: 100%; }
+.hero-reveal-fallback { display: none; position: absolute; inset: 0; background: url('/About%20Me%20Images/Kayeen%201.jpg') center 38% / cover no-repeat; opacity: var(--reveal-alpha); filter: blur(.6px); mask-image: radial-gradient(circle var(--reveal-radius) at var(--reveal-x) var(--reveal-y), #000 40%, transparent 100%); -webkit-mask-image: radial-gradient(circle var(--reveal-radius) at var(--reveal-x) var(--reveal-y), #000 40%, transparent 100%); }
+.hero-reveal-fallback::after { content: ''; position: absolute; inset: 0; background: rgb(245 242 236 / 48%); }
+.dark .hero-reveal-fallback::after { background: rgb(21 21 21 / 37%); }
+.hero-reveal[data-renderer='fallback'] .hero-reveal-fallback { display: block; }
+.hero-reveal[data-renderer='fallback'] canvas { visibility: hidden; }
+@media (hover: none) and (pointer: coarse) { .hero-reveal { display: none; } }

@@ -204,6 +204,12 @@
   font-size: 12.5px;
   line-height: 1.65;
   letter-spacing: .015em;
+  color: #101010;
+  opacity: .92;
+}
+
+.dark .folder-description {
+  color: #f7f3ec;
   opacity: .82;
 }
 

@@ -90,6 +90,38 @@
   color: #cbd5e1;
 }
 
+/* ── Light mode overrides for project details ────────────── */
+
+.light .project-detail-container {
+  color: #101010;
+}
+
+.light .detail-top-bar {
+  border-bottom-color: rgba(16, 16, 16, 0.16);
+}
+
+.light .back-btn {
+  color: #101010;
+}
+
+.light .archive-date {
+  color: #55524c;
+}
+
+.light .project-title {
+  color: #101010;
+}
+
+.light .prose-columns,
+.light .prose-col {
+  color: #101010;
+}
+
+.light .carousel-counter {
+  color: #101010;
+  opacity: 0.9;
+}
+
 /* ── Team Credits ─────────────────────────────────────────── */
 
 .project-team {
@@ -102,7 +134,15 @@
 
 .light .project-team {
   --team-rule: rgba(16, 16, 16, 0.2);
-  --team-muted: #625f58;
+  --team-muted: #48453e;
+}
+
+.light .project-team-title {
+  color: #101010;
+}
+
+.light .project-team-credit h3 {
+  color: #101010;
 }
 
 .project-team-header {

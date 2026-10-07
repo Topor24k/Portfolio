@@ -1,0 +1,113 @@
+/* ── Phone-first layer ─────────────────────────────────────
+   Loaded last. Everything here exists only on small screens and is
+   designed around thumbs: a bottom tab dock, a slim top bar, big type,
+   swipeable work and tactile press states. */
+
+.mobile-dock { display: none; }
+
+@media (max-width: 760px) {
+  :root {
+    --dock-h: 62px;
+    --dock-gap: max(12px, env(safe-area-inset-bottom));
+    --dock-space: calc(var(--dock-h) + var(--dock-gap) + 18px);
+  }
+  * { -webkit-tap-highlight-color: transparent; }
+
+  /* Slim top bar: music sits left, sound + theme on the right. */
+  .site-header, .site-header.is-scrolled {
+    justify-content: flex-end;
+    gap: .45rem;
+    padding: max(.6rem, env(safe-area-inset-top)) max(var(--phone-gutter), env(safe-area-inset-right)) .6rem max(var(--phone-gutter), env(safe-area-inset-left));
+    transition: background-color .35s ease, border-color .35s ease, backdrop-filter .35s ease;
+  }
+  .site-header { border-bottom: 1px solid transparent; }
+  /* The frosted glass lives on a pseudo-element: a backdrop-filter on the header itself
+     would make it the containing block for the fixed dock and drag the dock to the top. */
+  .site-header::before {
+    content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; opacity: 0;
+    background: rgb(245 242 236 / 72%);
+    -webkit-backdrop-filter: blur(16px) saturate(1.5);
+    backdrop-filter: blur(16px) saturate(1.5);
+    transition: opacity .35s ease;
+  }
+  .dark .site-header::before { background: rgb(21 21 21 / 68%); }
+  .site-header.is-scrolled { background: transparent; border-bottom-color: rgb(16 16 16 / 8%); }
+  .dark .site-header.is-scrolled { background: transparent; border-bottom-color: rgb(245 242 236 / 10%); }
+  .site-header.is-scrolled::before { opacity: 1; }
+  .site-header .sound-toggle-btn { order: 2; }
+  .site-header .utility-actions { order: 3; margin-left: 0; }
+  .site-header .utility-button { min-height: 40px; height: 40px; padding-inline: .85rem; border-radius: 999px; font-size: .58rem; letter-spacing: .1em; }
+
+  .portfolio-shell:not(.is-detail) .music-player { top: max(.6rem, env(safe-area-inset-top)); bottom: auto; left: max(var(--phone-gutter), env(safe-area-inset-left)); z-index: 130; }
+  .portfolio-shell:not(.is-detail) .music-toggle { min-height: 40px; height: 40px; padding: 0 .85rem; border-radius: 999px; }
+  .portfolio-shell:not(.is-detail) .music-waveform { width: 34px; height: 16px; }
+  .portfolio-shell:not(.is-detail) .music-status { bottom: auto; top: calc(100% + .45rem); border-radius: 6px; animation: music-hint 5s ease forwards; }
+  @keyframes music-hint { 0%, 80% { opacity: 1; } 100% { opacity: 0; visibility: hidden; } }
+
+  /* Bottom tab dock. */
+  .mobile-dock {
+    position: fixed;
+    left: 50%;
+    bottom: var(--dock-gap);
+    z-index: 150;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    width: min(calc(100% - 2 * var(--phone-gutter)), 25rem);
+    height: var(--dock-h);
+    padding: 6px;
+    translate: -50% 0;
+    border: 1px solid rgb(16 16 16 / 10%);
+    border-radius: 999px;
+    background: rgb(245 242 236 / 80%);
+    box-shadow: 0 14px 34px rgb(0 0 0 / 16%), inset 0 1px 0 rgb(255 255 255 / 50%);
+    -webkit-backdrop-filter: blur(18px) saturate(1.6);
+    backdrop-filter: blur(18px) saturate(1.6);
+    animation: dock-in .9s cubic-bezier(.16, 1, .3, 1) .25s backwards;
+  }
+  .dark .mobile-dock { background: rgb(30 29 28 / 78%); border-color: rgb(245 242 236 / 12%); box-shadow: 0 14px 34px rgb(0 0 0 / 45%), inset 0 1px 0 rgb(255 255 255 / 6%); }
+  .dock-pill {
+    position: absolute; top: 6px; left: 0; height: calc(100% - 12px);
+    border-radius: 999px; background: #f04b42;
+    transition: transform .55s cubic-bezier(.34, 1.4, .64, 1), width .55s cubic-bezier(.34, 1.4, .64, 1);
+  }
+  .dock-pill.is-ghost { opacity: 1; }
+  .dock-tab {
+    position: relative; z-index: 1;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+    min-width: 0; padding: 0; border: 0; border-radius: 999px;
+    background: none; color: inherit;
+    font-size: .55rem; font-weight: 500; letter-spacing: .08em; text-transform: uppercase;
+    opacity: .6; transition: opacity .3s ease, color .3s ease, scale .2s ease;
+  }
+  .dock-tab svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; transition: translate .45s cubic-bezier(.34, 1.56, .64, 1); }
+  .dock-tab.is-active { opacity: 1; color: #101010; }
+  .dock-tab.is-active svg { translate: 0 -1px; }
+  .dock-tab:active { scale: .88; }
+  .dock-tab:focus-visible { outline: 2px solid #f04b42; outline-offset: 2px; }
+  @keyframes dock-in { from { translate: -50% 160%; } }
+
+  /* Hero: the name becomes a poster — stacked, huge, middle initial in accent. */
+  .hero { padding: 6rem var(--phone-gutter) var(--dock-space); }
+  .hero-title-wrapper { width: 100%; }
+  .hero h1 { width: 100%; font-size: 25.5cqw; line-height: .9; letter-spacing: -.04em; white-space: normal; }
+  .hero h1 :is(.kinetic-word, .name-word) { display: block; }
+  .hero h1 .w1 { color: #f04b42; }
+  .hero .hero-side-left { margin: 0 0 1.3rem; }
+  .hero .hero-side-right { margin: 1.3rem 0 0; }
+  .hero-guide-prompt { bottom: var(--dock-space); }
+  .hero-hud { inset: 5.25rem var(--phone-gutter) calc(var(--dock-space) - .25rem); }
+  .hud-readout { bottom: 2.2rem; }
+
+  /* Footer and page ends clear the dock. */
+  .site-footer { padding-bottom: calc(var(--dock-space) + .5rem); }
+  .about-view, .contact-view, .projects-view--grid { padding-bottom: 1.5rem; }
+
+  /* Tactile press states everywhere a thumb can land. */
+  :is(button, a, [role='button'], .contact-choice-label):active { opacity: .78; }
+  :is(.folder-card, .reel-card-hit, .capability, .about-action, .project-inquiry-submit, .home-cta-orb, .intro-enter):active { scale: .97; }
+}
+
+@media (max-width: 760px) and (prefers-reduced-motion: reduce) {
+  .mobile-dock { animation: none; }
+  .dock-pill, .dock-tab, .dock-tab svg { transition: none; }
+}

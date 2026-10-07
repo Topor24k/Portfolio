@@ -10,6 +10,8 @@ export default function FolderCard({ project, index, onSelect }) {
       role="button"
       tabIndex={0}
       aria-label={`View project: ${project.name}`}
+      data-cursor="Open"
+
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault()
@@ -17,6 +19,7 @@ export default function FolderCard({ project, index, onSelect }) {
         }
       }}
     >
+      <div className="folder-tilt" data-tilt>
       {/* Layered depth sheets behind the card */}
       <div className="folder-card-layers" aria-hidden="true">
         <span className="folder-layer folder-layer-2" />
@@ -30,6 +33,7 @@ export default function FolderCard({ project, index, onSelect }) {
 
       {/* Main card body */}
       <div className="folder-body">
+        <span className="tilt-glare" aria-hidden="true" />
         {/* Cover image */}
         <div className="folder-cover">
           <LazyImage
@@ -54,6 +58,7 @@ export default function FolderCard({ project, index, onSelect }) {
             ))}
           </div>
         </div>
+      </div>
       </div>
     </article>
   )

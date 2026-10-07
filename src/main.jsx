@@ -1,5 +1,6 @@
 import { StrictMode, useEffect, useRef, useState } from 'react'
 import { createRoot } from 'react-dom/client'
+import { flushSync } from 'react-dom'
 import './styles.css'
 import HangingBadge from './HangingBadge'
 import ProjectsView from './ProjectsView'
@@ -12,10 +13,18 @@ import SiteFooter from './SiteFooter'
 import OpeningIntro from './OpeningIntro'
 import HeroReveal from './HeroReveal'
 import MusicPlayer from './MusicPlayer'
+import MotionLayer from './motion/MotionLayer'
+import HeroField from './motion/HeroField'
+import HeroHud from './motion/HeroHud'
+import KineticName from './motion/KineticName'
+import HomeReel from './motion/HomeReel'
+import { Roll } from './motion/SplitText'
+import './motion/hero-motion.css'
 import { readAudioPreference, saveAudioPreference } from './audioPreferences'
 import { setSoundMuted, playNavSound, playIdLaceSound, playButtonClickSound, setActiveView, stopGlitchSound } from './soundEffects'
 
 import './mobile.css'
+import './phone.css'
 
 const VALID_VIEWS = ['home', 'projects', 'about', 'contact']
 
@@ -191,30 +200,20 @@ function App() {
     window.scrollTo({ top: 0, behavior: 'instant' })
   }
 
-  const handleNavigate = (destination) => {
-    if (destination === currentView || isPageTransitioning) return
-
+  // Every page change runs under the colour wipe; the view swaps while the screen is covered.
+  const runTransition = (label, swap) => {
     stopGlitchSound()
     setActiveView('transitioning')
     playNavSound()
     transitionTimers.current.forEach((timer) => window.clearTimeout(timer))
-    setTransitionLabel(viewLabels[destination] || 'HOME')
+    setTransitionLabel(label)
     setIsCardOpen(false)
     setIsPageTransitioning(true)
 
     const swapTimer = window.setTimeout(() => {
-      setCurrentView(destination)
-      setActiveView(destination)
-      setIsProjectDetailOpen(false)
+      swap()
       reopenAfter.current = Date.now() + 800
       window.scrollTo({ top: 0, behavior: 'instant' })
-
-      const targetHash = destination === 'home' ? '' : destination
-      if (targetHash) {
-        window.location.hash = targetHash
-      } else {
-        window.history.replaceState(null, '', window.location.pathname + window.location.search)
-      }
     }, 590)
 
     const finishTimer = window.setTimeout(() => {
@@ -224,9 +223,57 @@ function App() {
     transitionTimers.current = [swapTimer, finishTimer]
   }
 
+  const handleNavigate = (destination) => {
+    if (destination === currentView || isPageTransitioning) return
+
+    runTransition(viewLabels[destination] || 'HOME', () => {
+      setCurrentView(destination)
+      setActiveView(destination)
+      setIsProjectDetailOpen(false)
+
+      const targetHash = destination === 'home' ? '' : destination
+      if (targetHash) {
+        window.location.hash = targetHash
+      } else {
+        window.history.replaceState(null, '', window.location.pathname + window.location.search)
+      }
+    })
+  }
+
+  const handleOpenProject = (project) => {
+    if (isPageTransitioning) return
+    runTransition(project.tab, () => {
+      window.location.hash = `project/${project.id}`
+      setCurrentView('projects')
+      setActiveView('projects')
+      setIsProjectDetailOpen(true)
+    })
+  }
+
+  // The new theme spreads out from the toggle as a growing circle.
+  const toggleTheme = (event) => {
+    const next = !isLight
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (!document.startViewTransition || reduced) {
+      setIsLight(next)
+      return
+    }
+    const x = event.clientX || window.innerWidth - 60
+    const y = event.clientY || 40
+    const radius = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y))
+    const transition = document.startViewTransition(() => flushSync(() => setIsLight(next)))
+    transition.ready.then(() => {
+      document.documentElement.animate(
+        { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radius}px at ${x}px ${y}px)`] },
+        { duration: 900, easing: 'cubic-bezier(.83, 0, .17, 1)', pseudoElement: '::view-transition-new(root)' },
+      )
+    }).catch(() => {})
+  }
+
   return (
-    <main className={`portfolio-shell ${isLight ? 'light' : 'dark'}`}>
-      {showIntro && <OpeningIntro soundOn={soundOn}
+    <main className={`portfolio-shell ${isLight ? 'light' : 'dark'}${isProjectDetailOpen ? ' is-detail' : ''}`}>
+      <MotionLayer />
+      {showIntro && <OpeningIntro soundOn={soundOn} isLight={isLight}
         onSoundChange={changeSound}
         onComplete={() => {
           setShowIntro(false)
@@ -256,8 +303,9 @@ function App() {
           <NavigationMenu currentView={currentView} onNavigate={handleNavigate} />
 
           <div className="utility-actions">
-            <button className="utility-button" type="button" onClick={() => setIsLight(!isLight)}>
-              <span aria-hidden="true">✱</span> {isLight ? 'LIGHT' : 'DARK'}
+            <button className="utility-button theme-toggle" type="button" data-magnetic="0.3" onClick={toggleTheme}
+              aria-label={isLight ? 'Switch to dark mode' : 'Switch to light mode'}>
+              <span className="theme-toggle-star" aria-hidden="true">✱</span> <Roll>{isLight ? 'LIGHT' : 'DARK'}</Roll>
             </button>
           </div>
         </header>
@@ -270,9 +318,12 @@ function App() {
       ) : currentView !== 'home' ? (
         <ProjectsView onNavigate={handleNavigate} setIsProjectDetailOpen={setIsProjectDetailOpen} />
       ) : (
+        <>
         <section className="hero" id="top" aria-labelledby="hero-title">
+          <HeroField active={!isPageTransitioning} isLight={isLight} />
           <HeroReveal active={!showIntro && !isCardOpen && !isPageTransitioning} isLight={isLight} />
-          <div className="hero-title-wrapper">
+          {!showIntro && <HeroHud />}
+          <div className="hero-title-wrapper hero-scrolled-fade">
             {showIntro ? <p className="hero-side hero-side-left">CREATIVE DEVELOPER</p> : <GlitchRole />}
             <h1 id="hero-title" tabIndex={-1}>
               <button
@@ -281,9 +332,10 @@ function App() {
                 aria-label="Click to view ID badge"
                 aria-expanded={isCardOpen}
                 aria-controls="hanging-business-card"
+                data-cursor="Open ID"
                 onClick={openBusinessCard}
               >
-                KAYEEN M. CAMPAÑA
+                <KineticName text="KAYEEN M. CAMPAÑA" />
               </button>
             </h1>
             <p className="hero-side hero-side-right">DAVAO CITY, PHILIPPINES.</p>
@@ -293,11 +345,11 @@ function App() {
             <span>CLICK NAME TO VIEW ID</span>
           </p>
         </section>
+        <HomeReel onNavigate={handleNavigate} onOpenProject={handleOpenProject} />
+        </>
       )}
 
-      {currentView !== 'home' && (
-        <SiteFooter currentView={currentView} onNavigate={handleNavigate} />
-      )}
+      <SiteFooter currentView={currentView} onNavigate={handleNavigate} />
 
       <HangingBadge
         isOpen={isCardOpen}

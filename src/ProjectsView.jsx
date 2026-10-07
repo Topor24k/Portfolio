@@ -3,6 +3,7 @@ import './projects.css'
 import { projects } from './projects'
 import FolderCard from './FolderCard'
 import ProjectDetailFrame from './ProjectDetailFrame'
+import { SplitText } from './motion/SplitText'
 
 
 export default function ProjectsView({ onNavigate, setIsProjectDetailOpen }) {
@@ -91,13 +92,13 @@ export default function ProjectsView({ onNavigate, setIsProjectDetailOpen }) {
     <div className="projects-view projects-view--grid">
       {/* Section header */}
       <header className="projects-header">
-        <p className="projects-eyebrow">PORTFOLIO ARCHIVE</p>
-        <h1 className="projects-title">SELECTED WORK</h1>
+        <p className="projects-eyebrow" data-reveal="up">PORTFOLIO ARCHIVE</p>
+        <SplitText as="h1" className="projects-title" text="SELECTED WORK" />
       </header>
 
       {/* Client Projects Section */}
       <section className="projects-group-section">
-        <div className="projects-group-header">
+        <div className="projects-group-header" data-reveal="up">
           <div className="projects-group-tag">
             <span className="projects-group-dot" />
             <h2 className="projects-group-title">CLIENT PROJECTS</h2>
@@ -118,7 +119,7 @@ export default function ProjectsView({ onNavigate, setIsProjectDetailOpen }) {
 
       {/* Personal Projects Section */}
       <section className="projects-group-section">
-        <div className="projects-group-header">
+        <div className="projects-group-header" data-reveal="up">
           <div className="projects-group-tag">
             <span className="projects-group-dot" />
             <h2 className="projects-group-title">PERSONAL PROJECTS</h2>

@@ -220,14 +220,14 @@ export default function ContactView({ onNavigate }) {
     <div className="contact-container">
       <div className="contact-composition">
         <div className="contact-intro">
-          <p className="contact-kicker"><span aria-hidden="true" /> Reach Out.</p>
-          <h1 id="contact-title">YOUR<br /><GlitchHeadingWord /><br /><span className="contact-title-highlight">ONLINE.</span></h1>
-          <p className="contact-lead">Your first website starts here.</p>
-          <p className="contact-description">Tell me what you’re building. My team and I will help turn your business into a website that feels like you and works for your customers.</p>
-          <button type="button" className="contact-work-link" onClick={() => onNavigate('projects')}>Explore our work <span aria-hidden="true">↗</span></button>
+          <p className="contact-kicker" data-reveal="up"><span aria-hidden="true" /> Reach Out.</p>
+          <h1 id="contact-title" data-reveal="up">YOUR<br /><GlitchHeadingWord /><br /><span className="contact-title-highlight">ONLINE.</span></h1>
+          <p className="contact-lead" data-reveal="up" style={{ '--reveal-delay': '120ms' }}>Your first website starts here.</p>
+          <p className="contact-description" data-reveal="up" style={{ '--reveal-delay': '200ms' }}>Tell me what you’re building. My team and I will help turn your business into a website that feels like you and works for your customers.</p>
+          <button type="button" className="contact-work-link" data-magnetic="0.2" data-reveal="up" style={{ '--reveal-delay': '280ms' }} onClick={() => onNavigate('projects')}>Explore our work <span aria-hidden="true">↗</span></button>
         </div>
 
-        <div className="contact-brief">
+        <div className="contact-brief" data-reveal="up" style={{ '--reveal-delay': '150ms' }}>
           <div className="contact-brief-label"><span>Let’s make a plan</span><span>Website brief</span></div>
           <ol className="contact-steps" aria-label="Inquiry progress">
             {STEPS.map((label, index) => <li key={label} data-active={index === step} data-complete={index < step} aria-current={index === step ? 'step' : undefined}>
@@ -292,7 +292,7 @@ export default function ContactView({ onNavigate }) {
             </fieldset>
             <div className="contact-form-actions">
               {step > 0 ? <button className="contact-back" type="button" disabled={busy || status === 'success'} onClick={() => setStep((value) => value - 1)}>← Back</button> : <span className="contact-form-note">No technical knowledge needed.</span>}
-              <button className="project-inquiry-submit" type="submit" disabled={busy || status === 'success'}>
+              <button className="project-inquiry-submit" type="submit" data-magnetic="0.15" disabled={busy || status === 'success'}>
                 {busy ? 'Sending…' : status === 'success' ? 'Inquiry submitted' : step === 2 ? 'Send my inquiry' : 'Continue'}<span aria-hidden="true">{status === 'success' ? '✓' : '↗'}</span>
               </button>
             </div>

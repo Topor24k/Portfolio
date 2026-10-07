@@ -124,11 +124,15 @@ export const projects = [
     cover: '/Project%20Images/JLD.png',
     gallery: [
       '/Project%20Images/JLD.png',
-      '/JLD%20Project%20Pictures/Screenshot%202026-09-12%20202923.png',
+      '/JLD%20Project%20Pictures/Screenshot%202026-10-07%20162146.png',
+      '/JLD%20Project%20Pictures/Screenshot%202026-10-07%20162152.png',
+      '/JLD%20Project%20Pictures/Screenshot%202026-10-07%20162213.png',
     ],
     images: [
       { src: '/Project%20Images/JLD.png', alt: 'JLD Marketing website homepage', caption: '01 / Homepage' },
-      { src: '/JLD%20Project%20Pictures/Screenshot%202026-09-12%20202923.png', alt: 'JLD Marketing workspace details', caption: '02 / Details' },
+      { src: '/JLD%20Project%20Pictures/Screenshot%202026-10-07%20162146.png', alt: 'JLD Property Management platform screen', caption: '02 / Platform' },
+      { src: '/JLD%20Project%20Pictures/Screenshot%202026-10-07%20162152.png', alt: 'JLD Property Management platform screen', caption: '03 / Platform' },
+      { src: '/JLD%20Project%20Pictures/Screenshot%202026-10-07%20162213.png', alt: 'JLD Property Management platform screen', caption: '04 / Platform' },
     ],
     link: 'https://jld-two.vercel.app',
     artifacts: [

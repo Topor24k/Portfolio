@@ -3,7 +3,7 @@ import LazyImage from './LazyImage'
 import { ScrubText, SplitText } from './motion/SplitText'
 import { AboutJourney, CountUp } from './motion/AboutMotion'
 import { VelocityMarquee } from './motion/HomeReel'
-import { projects } from './projects'
+import { useProjects } from './lib/projectStore'
 import './about-view.css'
 
 const WORD_SETS = [
@@ -69,6 +69,7 @@ const interests = [
 
 export default function AboutView({ onNavigate }) {
   const headlineWords = useRotatingHeadline()
+  const projects = useProjects()
 
   return (
     <article className="about-view" aria-label="About Kayeen M. Campaña">

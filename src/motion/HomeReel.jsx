@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { projects } from '../projects'
+import { useProjects } from '../lib/projectStore'
 import { clamp, lerp, motion, onFrame } from './engine'
 import { Roll, ScrubText, SplitText } from './SplitText'
 import './home-reel.css'
@@ -52,7 +52,7 @@ export function VelocityMarquee({ items, reverse = false, outlined = false }) {
 }
 
 // Vertical scroll drives a horizontal filmstrip of projects while the frame stays pinned.
-function WorkReel({ onOpenProject, onNavigate }) {
+function WorkReel({ projects, onOpenProject, onNavigate }) {
   const sectionRef = useRef(null)
   const trackRef = useRef(null)
   const barRef = useRef(null)
@@ -118,7 +118,7 @@ function WorkReel({ onOpenProject, onNavigate }) {
       media.removeEventListener('change', layout)
       window.removeEventListener('resize', layout)
     }
-  }, [])
+  }, [projects])
 
   return (
     <section className="reel" ref={sectionRef} aria-labelledby="reel-title">
@@ -169,6 +169,7 @@ function WorkReel({ onOpenProject, onNavigate }) {
 }
 
 export default function HomeReel({ onNavigate, onOpenProject }) {
+  const projects = useProjects()
   return (
     <div className="home-reel">
       <section className="home-marquee" aria-label="Roles and tools">
@@ -191,7 +192,7 @@ export default function HomeReel({ onNavigate, onOpenProject }) {
         </div>
       </section>
 
-      <WorkReel onOpenProject={onOpenProject} onNavigate={onNavigate} />
+      <WorkReel projects={projects} onOpenProject={onOpenProject} onNavigate={onNavigate} />
 
       <section className="home-capabilities" aria-labelledby="capabilities-title">
         <header className="home-capabilities-head">

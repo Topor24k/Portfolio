@@ -1,4 +1,4 @@
-import { StrictMode, useEffect, useRef, useState } from 'react'
+import { StrictMode, Suspense, lazy, useEffect, useRef, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import { flushSync } from 'react-dom'
 import './styles.css'
@@ -360,6 +360,12 @@ function App() {
   )
 }
 
+// The owner studio lives at /admin. It is code-split so visitors never download it.
+const AdminApp = lazy(() => import('./admin/AdminApp'))
+const isStudioRoute = window.location.pathname.replace(/\/+$/, '') === '/admin'
+
 createRoot(document.getElementById('root')).render(
-  <StrictMode><App /></StrictMode>,
+  <StrictMode>
+    {isStudioRoute ? <Suspense fallback={null}><AdminApp /></Suspense> : <App />}
+  </StrictMode>,
 )

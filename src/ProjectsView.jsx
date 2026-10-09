@@ -1,28 +1,25 @@
 import { useState, useEffect } from 'react'
 import './projects.css'
-import { projects } from './projects'
+import { useProjects } from './lib/projectStore'
 import FolderCard from './FolderCard'
 import ProjectDetailFrame from './ProjectDetailFrame'
 import { SplitText } from './motion/SplitText'
 
 
 export default function ProjectsView({ onNavigate, setIsProjectDetailOpen }) {
-  const [selectedProject, setSelectedProject] = useState(() => {
+  const projects = useProjects()
+  // The selection is kept by id so it survives the project list refreshing from Supabase.
+  const [selectedId, setSelectedId] = useState(() => {
     if (typeof window !== 'undefined') {
       const hash = window.location.hash.replace(/^#\/?/, '').trim()
-      if (hash.startsWith('project/')) {
-        const id = hash.replace('project/', '')
-        return projects.find((p) => p.id === id) || null
-      }
+      if (hash.startsWith('project/')) return hash.replace('project/', '')
       try {
-        const savedProject = sessionStorage.getItem('kc_portfolio_project') || localStorage.getItem('kc_portfolio_project')
-        if (savedProject) {
-          return projects.find((p) => p.id === savedProject) || null
-        }
+        return sessionStorage.getItem('kc_portfolio_project') || localStorage.getItem('kc_portfolio_project') || null
       } catch (e) {}
     }
     return null
   })
+  const selectedProject = projects.find((p) => p.id === selectedId) || null
 
   useEffect(() => {
     if (setIsProjectDetailOpen) {
@@ -34,11 +31,9 @@ export default function ProjectsView({ onNavigate, setIsProjectDetailOpen }) {
     const handleHashChange = () => {
       const hash = window.location.hash.replace(/^#\/?/, '').trim()
       if (hash.startsWith('project/')) {
-        const id = hash.replace('project/', '')
-        const found = projects.find((p) => p.id === id) || null
-        setSelectedProject(found)
+        setSelectedId(hash.replace('project/', ''))
       } else {
-        setSelectedProject(null)
+        setSelectedId(null)
       }
     }
 
@@ -47,7 +42,7 @@ export default function ProjectsView({ onNavigate, setIsProjectDetailOpen }) {
   }, [])
 
   const handleSelectProject = (proj) => {
-    setSelectedProject(proj)
+    setSelectedId(proj.id)
     window.location.hash = `project/${proj.id}`
     try {
       sessionStorage.setItem('kc_portfolio_view', 'projects')
@@ -59,7 +54,7 @@ export default function ProjectsView({ onNavigate, setIsProjectDetailOpen }) {
   }
 
   const handleBackToProjects = () => {
-    setSelectedProject(null)
+    setSelectedId(null)
     window.location.hash = 'projects'
     try {
       sessionStorage.setItem('kc_portfolio_view', 'projects')

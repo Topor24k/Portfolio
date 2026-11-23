@@ -2,6 +2,8 @@
 
 .folder-card {
   position: relative;
+  display: flex;
+  flex-direction: column;
   min-width: 0;
   cursor: pointer;
   outline: none;
@@ -85,6 +87,7 @@
   clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 100%, 0 100%);
   font-family: 'Oswald', Impact, sans-serif;
   line-height: 1;
+  align-self: flex-start;
   user-select: none;
   transition: transform .28s cubic-bezier(.16, 1, .3, 1);
 }
@@ -118,6 +121,9 @@
 .folder-body {
   position: relative;
   z-index: 1;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
   min-width: 0;
   border: 1.5px solid rgba(16, 16, 16, .14);
   border-top: none;
@@ -160,6 +166,9 @@
 
 .folder-tilt {
   position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
 }
 
 .folder-cover-img,
@@ -206,7 +215,12 @@
 
 /* ── Details section ────────────────────────────────────── */
 
+/* Fills the rest of the card so every card in a row ends at the same line,
+   with the discipline tags pinned to the bottom. */
 .folder-details {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
   padding: 20px 22px 24px;
 }
 
@@ -223,13 +237,22 @@
   color: #d6a77a;
 }
 
+/* Always exactly 3 lines tall: shorter text keeps the space, longer text
+   is cut off with an ellipsis so every card stays the same size. */
 .folder-description {
+  display: -webkit-box;
   margin: 0 0 18px;
+  overflow: hidden;
   font-size: 12.5px;
   line-height: 1.65;
   letter-spacing: .015em;
   color: #101010;
   opacity: .92;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  height: calc(1.65em * 3);
+  height: 3lh;
 }
 
 .dark .folder-description {
@@ -243,6 +266,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 7px;
+  margin-top: auto;
 }
 
 .folder-discipline-tag {

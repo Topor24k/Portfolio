@@ -243,7 +243,7 @@ function ProjectEditor({ initial, isNew, teamPresets, onCancel, onSaved, onDelet
       <section className="studio-section">
         <h3><span>02</span> Story</h3>
         <div className="studio-grid">
-          <Field label="Card description" hint="shown on the project cards" wide>
+          <Field label="Card description" hint="shown on the project cards · max 3 lines, longer text is cut off with …" wide>
             <textarea rows={3} value={draft.description} onChange={(e) => update({ description: e.target.value })} />
           </Field>
           <Field label="Overview — paragraph 1" wide>
